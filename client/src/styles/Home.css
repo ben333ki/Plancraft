@@ -1,0 +1,218 @@
+.home-bg {
+    min-height: 100vh;
+    width: 100vw;
+    position: relative;
+    background: url('/Image/BG-home.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.content {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+    min-height: 100vh;
+}
+
+.content-home {
+    text-align: center;
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
+.content-home img {
+    max-width: 450px;
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.content-home h1 {
+    font-size: 2.3em;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.content-text {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid rgba(167, 202, 115, 0.3);
+}
+
+.content-text p {
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.btn-login, .btn-use-now {
+    padding: 12px 40px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-login {
+    background-color: #603F10;
+    color: white;
+}
+
+.btn-login:hover {
+    background-color: #ffffff;
+    color: #000000;
+    transform: translateY(-2px);
+}
+
+.btn-use-now {
+    background-color: #603F10;
+    color: white;
+}
+
+.btn-use-now:hover {
+    background-color: #ffffff;
+    color: #000000;
+    transform: translateY(-2px);
+}
+
+.function-website {
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+}
+
+.function-website img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    margin-left: 2%;
+    display: block;
+}
+
+.function-container {
+    position: absolute;
+    top: 0%;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.function-box {
+    background: rgba(216, 235, 255,0.9);
+    padding: 8px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: black;
+}
+
+.function-box:hover {
+    transform: translateY(-5px);
+    background: rgba(216, 235, 255, 1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.function-box:hover img {
+    transform: scale(1.1);
+}
+
+.function-box img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.function-box-content {
+    flex: 1;
+    text-align: left;
+}
+
+.function-box-content h1 {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    color: black;
+}
+
+.function-box-content p {
+    color: black;
+    line-height: 1.4;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.contact {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.contact h1 {
+    color: black;
+    margin-bottom: 30px;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 50px;
+    background: rgb(162, 192, 224);
+    border-radius: 40px;
+    text-decoration: none;
+    color: black;
+    transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+    transform: translateY(-3px);
+    background: rgba(216, 235, 255, 1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.social-btn img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    margin: 0;
+}
+
+.social-btn span {
+    font-size: 1em;
+    font-weight: 500;
+}
