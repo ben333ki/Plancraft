@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.header-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 20%;
+    padding: 5px;
+    background-color: #A7CA73;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 15px rgba(0, 0, 0, 0.2);
+    height: 40px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #603F10;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
+    color: white;
+    height: 40px;
+    width: 80%;
+}
+
+.creeper-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+}
+
+.brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
+    padding: 6px 20px;
+    transition: background-color 0.3s;
+    height: 40px;
+}
+
+.nav-item:hover {
+    background-color: #B27926;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.nav-item span {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-login-btn {
+    background-color: #9bbd67 !important;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+
+.navbar-login-btn:hover {
+    background-color: #6b9657; /* สีเขียวเข้มตอน hover */
+}
+
+
+.profile-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+}
+
+.profile-container img {
+    width: 35px;
+    height: 35px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
