@@ -21,7 +21,7 @@ const Navbar = () => {
                     <Link to="/home" className="nav-item">
                         <img src="Image/icon-home.png" alt="Home" />
                     </Link>
-                    <Link to="/" className="nav-item">
+                    <Link to="/craft" className="nav-item">
                         <img src="Image/icon-craft.png" alt="Craft" />
                         <span>Craft</span>
                     </Link>
