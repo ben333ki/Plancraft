@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 
 	"plancraft/config"
 	"plancraft/handlers"
@@ -21,7 +21,7 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-	  log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file")
 	}
 
 	// Initialize database connection
@@ -34,6 +34,7 @@ func main() {
 	// Protected routes
 	protected := app.Group("/api", middleware.AuthMiddleware())
 	protected.Get("/test-auth", handlers.TestAuth) // Test route for JWT authentication
+	protected.Put("/update-profile", handlers.UpdateProfile)
 
 	port := os.Getenv("PORT")
 	if port == "" {
