@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 🆕 Import useNavigate
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/login.css';
 import Leaves from './Leaves';
+import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const navigate = useNavigate(); // 🆕 Initialize navigate
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
 
     try {
       const response = await fetch('http://localhost:3000/login', {
@@ -27,13 +31,13 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Login successful!');
-        navigate('/home'); // 🆕 Redirect to /home page
+        login(data.user, data.token);
+        navigate('/profile');
       } else {
-        alert('Login failed: ' + data.error);
+        setError(data.error || 'Login failed');
       }
     } catch (error) {
-      alert('Error logging in: ' + error.message);
+      setError('Error logging in: ' + error.message);
     }
   };
 
@@ -51,6 +55,8 @@ const Login = () => {
               <img src="Image/icon-creeper.png" alt="Logo" />
             </div>
             <h1>LOGIN</h1>
+            
+            {error && <div className="error-message">{error}</div>}
             
             <form onSubmit={handleLogin} autoComplete="off">
               <div className="form-group">
