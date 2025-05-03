@@ -2,10 +2,9 @@ package handlers
 
 import (
 	"plancraft/config"
+	"plancraft/middleware"
 	"plancraft/models"
-	"plancraft/utils"
 	"regexp"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 
@@ -28,20 +27,12 @@ func CreateAccount(c *fiber.Ctx) error {
 		})
 	}
 
-	// Validate email format
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	if !re.MatchString(body.Email) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid email format",
 		})
 	}
-
-	// Validate password strength
-	// if len(body.Password) < 8 {
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	// 		"error": "Password must be at least 8 characters long",
-	// 	})
-	// }
 
 	// Check if email already exists
 	var existingUser models.User
@@ -77,27 +68,18 @@ func CreateAccount(c *fiber.Ctx) error {
 		})
 	}
 
-	// 🎯 Generate JWT token after successful account creation
-	token, err := utils.GenerateJWT(newUser.UserID)
+	// Generate JWT token
+	token, err := middleware.GenerateToken(newUser.UserID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to generate token",
 		})
 	}
 
-	// Set the JWT token as an HTTP-only cookie for security
-	c.Cookie(&fiber.Cookie{
-		Name:     "token",
-		Value:    token,
-		Expires:  time.Now().Add(72 * time.Hour), // Token expires in 72 hours
-		HTTPOnly: true,
-		Secure:   true,  // Only send cookie over HTTPS
-		SameSite: "Strict", // Ensures cookie is not sent in cross-site requests
-	})
-
-	// Respond with user data excluding sensitive information
+	// Respond with user data and token
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "Account created successfully",
+		"token":   token,
 		"user": fiber.Map{
 			"user_id":         newUser.UserID,
 			"username":        newUser.Username,

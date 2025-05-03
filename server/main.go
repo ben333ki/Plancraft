@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 
@@ -17,17 +19,26 @@ func main() {
 	app.Use(cors.New())
 	fmt.Println("Server is running")
 
+	err := godotenv.Load()
+	if err != nil {
+	  log.Fatal("Error loading .env file")
+	}
+
 	// Initialize database connection
 	config.InitDatabase()
 
-	// Route for creating a new account
+	// Public routes
 	app.Post("/create-account", handlers.CreateAccount)
-
-	// Route for logging in
 	app.Post("/login", handlers.Login)
 
-	// Profile route that requires authentication
-	app.Get("/profile", middleware.Protected(), handlers.Profile) // Link to the Profile handler
+	// Protected routes
+	protected := app.Group("/api", middleware.AuthMiddleware())
+	protected.Get("/test-auth", handlers.TestAuth) // Test route for JWT authentication
 
-	log.Fatal(app.Listen(":3000"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000" // fallback
+	}
+
+	log.Fatal(app.Listen(":" + port))
 }

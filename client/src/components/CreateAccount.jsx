@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Leaves from './Leaves';
 import '../styles/createAccount.css';
-import { useNavigate } from 'react-router-dom'; // <-- เพิ่มตรงนี้
-
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const CreateAccount = () => {
-  const navigate = useNavigate(); // <-- เพิ่มตรงนี้
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   // --- Create State for input fields ---
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
 
   // --- Handle Form Submit ---
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
@@ -38,13 +41,14 @@ const CreateAccount = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Account created successfully!');
-        navigate('/home'); // 🆕 Redirect to /home page
+        // Login the user with the received token and user data
+        login(data.user, data.token);
+        navigate('/profile');
       } else {
-        alert('Failed to create account: ' + data.error);
+        setError(data.error || 'Failed to create account');
       }
     } catch (error) {
-      alert('Error creating account: ' + error.message);
+      setError('Error creating account: ' + error.message);
     }
   };
 
@@ -65,6 +69,8 @@ const CreateAccount = () => {
               <img src="Image/icon-creeper.png" alt="Creeper Icon" />
             </div>
             <h1>CREATE ACCOUNT</h1>
+            
+            {error && <div className="error-message">{error}</div>}
             
             <form onSubmit={handleSubmit} autoComplete="off">
               <div className="form-group">
