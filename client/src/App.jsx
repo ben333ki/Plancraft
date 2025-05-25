@@ -8,6 +8,7 @@ import Home from './components/Home';
 import EditProfile from './components/Edit-profile';
 import Craft from './components/Craft';
 import ProtectedRoute from './components/ProtectedRoute';
+import TodoList from './components/TodoList';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/craft" element={<Craft />} />
+          <Route path="/to do list" element={<TodoList />} />
 
           {/* Protected Routes */}
           <Route path="/profile" element={
