@@ -48,6 +48,7 @@
     padding: 25px;
     border-radius: 10px;
     border: 1px solid rgba(167, 202, 115, 0.3);
+    font-family: Arial, sans-serif;
 }
 
 .home-description p {

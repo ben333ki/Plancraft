@@ -98,7 +98,7 @@
     margin-bottom: auto;
 }
 
-.navbar-login {
+.navbar-login-btn {
     background-color: #9bbd67 !important;
     color: white;
     border: none;
@@ -111,6 +111,6 @@
     margin-bottom: auto;
 }
 
-.navbar-login:hover {
+.navbar-login-btn:hover {
     background-color: #6b9657;
 }

@@ -43,10 +43,10 @@ const Navbar = () => {
                         <span>Calculator</span>
                     </Link>
                 </div>
-                <div className="nav-right">
+                <div className="navbar-menu-right">
                     <div className="nav-profile-container">
                         {user ? (
-                            <div className="user-profile" onClick={handleProfile}>
+                            <div className="navbar-profile" onClick={handleProfile}>
                                 <img 
                                     src={user.profile_picture || "Image/icon-steve-profile.webp"} 
                                     alt="Profile" 
@@ -55,10 +55,11 @@ const Navbar = () => {
                                 <span className="username">{user.username}</span>
                             </div>
                         ) : (
-                            <>
+
+                                <div className="navbar-profile">
                                 <img src="Image/icon-steve-profile.webp" alt="Profile" />
                                 <button className="navbar-login-btn" onClick={handleLogin}>LOGIN</button>
-                            </>
+                                </div>
                         )}
                     </div>
                 </div>
