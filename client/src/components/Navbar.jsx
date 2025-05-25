@@ -39,7 +39,7 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <div className="nav-right">
-                    <div className="profile-container">
+                    <div className="nav-profile-container">
                         <img src="Image/icon-steve-profile.webp" alt="Profile" />
                         <button className="navbar-login-btn" onClick={handleLogin}>LOGIN</button>
                     </div>
