@@ -21,7 +21,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/craft" element={<Craft />} />
-          <Route path="/to do list" element={<TodoList />} />
+          <Route path="/todolist" element={<TodoList />} />
 
           {/* Protected Routes */}
           <Route path="/profile" element={

@@ -34,7 +34,7 @@ const Navbar = () => {
                         <img src="Image/Wheat.webp" alt="Farm" />
                         <span>Farm</span>
                     </Link>
-                    <Link to="/" className="navbar-menu-item">
+                    <Link to="/todolist" className="navbar-menu-item">
                         <img src="Image/icon-to do list.png" alt="To do list" />
                         <span>To do list</span>
                     </Link>
