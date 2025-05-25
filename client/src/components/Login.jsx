@@ -45,21 +45,22 @@ const Login = () => {
     <>
       <Leaves />
       
-      <div className="login-page">
-        <img src="Image/minecraft-pet-bg2.webp" alt="Background" className="side-image" />
-        <div className="login-container">
-          <div className="login-box">
-            <div className="box-top-right"></div>
-            <div className="smallbox-top-right"></div>
-            <div className="logo-plancraft">
+      <div className='login-page'>
+      <div className="login-content">
+        <img src="Image/minecraft-pet-bg2.webp" alt="Background" className="login-side-image" />
+        <div className="login-form-container">
+          <div className="login-form-box">
+            <div className="login-decor-box-top"></div>
+            <div className="login-decor-small-top"></div>
+            <div className="login-logo">
               <img src="Image/icon-creeper.png" alt="Logo" />
             </div>
             <h1>LOGIN</h1>
             
-            {error && <div className="error-message">{error}</div>}
+            {error && <div className="login-error">{error}</div>}
             
             <form onSubmit={handleLogin} autoComplete="off">
-              <div className="form-group">
+              <div className="login-input-group">
                 <label htmlFor="email">Email</label>
                 <input
                   type="email"
@@ -72,7 +73,7 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div className="form-group">
+              <div className="login-input-group">
                 <label htmlFor="password">Password</label>
                 <input
                   type="password"
@@ -86,8 +87,8 @@ const Login = () => {
                 />
               </div>
 
-              <div className="remember-me">
-                <label className="switch">
+              <div className="login-remember">
+                <label className="login-switch">
                   <input
                     type="checkbox"
                     id="remember"
@@ -95,10 +96,10 @@ const Login = () => {
                     checked={rememberMe}
                     onChange={() => setRememberMe(!rememberMe)}
                   />
-                  <span className="slider round"></span>
+                  <span className="login-slider round"></span>
                 </label>
                 <span
-                  className="remember-text"
+                  className="login-remember-text"
                   onClick={() => setRememberMe(!rememberMe)}
                   style={{ cursor: 'pointer' }}
                 >
@@ -106,15 +107,16 @@ const Login = () => {
                 </span>
               </div>
 
-              <button type="submit" className="login-btn">LOGIN</button>
+              <button type="submit" className="login-submit-btn">LOGIN</button>
             </form>
 
-            <a href="/create-account" className="create-account">Create account</a>
+            <a href="/create-account" className="login-create-account">Create account</a>
 
-            <div className="smallbox-bottom-right"></div>
-            <div className="box-bottom-right"></div>
+            <div className="login-decor-small-bottom"></div>
+            <div className="login-decor-box-bottom"></div>
           </div>
         </div>
+      </div>
       </div>
     </>
   );
