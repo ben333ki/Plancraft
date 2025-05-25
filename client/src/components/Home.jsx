@@ -24,7 +24,7 @@ const Home = () => {
           <div className="function-container">
             <h1>ระบบที่มีอยู่ในเว็บไซต์</h1>
 
-            <a href="#" className="function-box">
+            <a href="/craft" className="function-box">
               <img src="/Image/icon-craft.png" alt="Craft Icon" />
               <div className="function-box-content">
                 <h1>ระบบ Craft</h1>
