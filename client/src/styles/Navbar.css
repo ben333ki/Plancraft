@@ -1,23 +1,14 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-}
-
-.header-container {
+.navbar-container {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
     display: flex;
+    font-family: Arial, sans-serif;
 }
 
-.logo-container {
+.navbar-logo {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -29,7 +20,19 @@ body {
     height: 40px;
 }
 
-.navbar {
+.navbar-logo-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.navbar-menu {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -41,24 +44,12 @@ body {
     width: 80%;
 }
 
-.creeper-icon {
-    width: 30px;
-    height: 30px;
-    margin-left: 10px;
-}
-
-.brand {
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-}
-
-.nav-left {
+.navbar-menu-left {
     display: flex;
     align-items: center;
 }
 
-.nav-item {
+.navbar-menu-item {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -71,29 +62,43 @@ body {
     height: 40px;
 }
 
-.nav-item:hover {
+.navbar-menu-item:hover {
     background-color: #B27926;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
                 inset 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-.nav-item img {
+.navbar-menu-item img {
     width: 28px;
     height: 28px;
     object-fit: contain;
 }
 
-.nav-item span {
+.navbar-menu-item span {
     font-size: 14px;
     white-space: nowrap;
 }
 
-.nav-right {
+.navbar-menu-right {
     display: flex;
     align-items: center;
 }
 
-.navbar-login-btn {
+.navbar-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+}
+
+.navbar-profile img {
+    width: 35px;
+    height: 35px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.navbar-login {
     background-color: #9bbd67 !important;
     color: white;
     border: none;
@@ -106,22 +111,6 @@ body {
     margin-bottom: auto;
 }
 
-
-.navbar-login-btn:hover {
-    background-color: #6b9657; /* สีเขียวเข้มตอน hover */
-}
-
-
-.nav-profile-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 5px 10px;
-}
-
-.nav-profile-container img {
-    width: 35px;
-    height: 35px;
-    margin-top: auto;
-    margin-bottom: auto;
+.navbar-login:hover {
+    background-color: #6b9657;
 }

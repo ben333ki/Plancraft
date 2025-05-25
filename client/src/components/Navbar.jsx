@@ -9,39 +9,38 @@ const Navbar = () => {
         navigate('/login');
     }
 
-
     return (
-        <div className="header-container">
-            <div className="logo-container">
-                <img src="Image/icon-creeper.png" alt="Creeper" className="creeper-icon" />
-                <span className="brand">Plancraft</span>
+        <div className="navbar-container">
+            <div className="navbar-logo">
+                <img src="Image/icon-creeper.png" alt="Creeper" className="navbar-logo-icon" />
+                <span className="navbar-brand">Plancraft</span>
             </div>
-            <nav className="navbar">
-                <div className="nav-left">
-                    <Link to="/home" className="nav-item">
+            <nav className="navbar-menu">
+                <div className="navbar-menu-left">
+                    <Link to="/home" className="navbar-menu-item">
                         <img src="Image/icon-home.png" alt="Home" />
                     </Link>
-                    <Link to="/craft" className="nav-item">
+                    <Link to="/craft" className="navbar-menu-item">
                         <img src="Image/icon-craft.png" alt="Craft" />
                         <span>Craft</span>
                     </Link>
-                    <Link to="/" className="nav-item">
+                    <Link to="/" className="navbar-menu-item">
                         <img src="Image/Wheat.webp" alt="Farm" />
                         <span>Farm</span>
                     </Link>
-                    <Link to="/" className="nav-item">
+                    <Link to="/" className="navbar-menu-item">
                         <img src="Image/icon-to do list.png" alt="To do list" />
                         <span>To do list</span>
                     </Link>
-                    <Link to="/" className="nav-item">
+                    <Link to="/" className="navbar-menu-item">
                         <img src="Image/icon-calculator.png" alt="Calculator" />
                         <span>Calculator</span>
                     </Link>
                 </div>
-                <div className="nav-right">
-                    <div className="nav-profile-container">
+                <div className="navbar-menu-right">
+                    <div className="navbar-profile">
                         <img src="Image/icon-steve-profile.webp" alt="Profile" />
-                        <button className="navbar-login-btn" onClick={handleLogin}>LOGIN</button>
+                        <button className="navbar-login" onClick={handleLogin}>LOGIN</button>
                     </div>
                 </div>
             </nav>
