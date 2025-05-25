@@ -21,8 +21,7 @@
     background: none;
 }
 
-
-
+/* Header Styles */
 .todo-header {
     display: flex;
     flex-direction: column;
@@ -49,8 +48,7 @@
     width: 100%;
 }
 
-
-
+/* Search and Add Button */
 .todo-search {
     padding: 8px 14px;
     border-radius: 5px;
@@ -80,8 +78,7 @@
     box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
 }
 
-
-
+/* Sidebar Styles */
 .todo-sidebar {
     background-color: #4e3b1f;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.8);
@@ -99,8 +96,7 @@
     font-weight: bold;
 }
 
-
-
+/* Category Buttons */
 .todo-category-buttons {
     display: flex;
     flex-direction: column;
@@ -131,8 +127,7 @@
     border-color: rgba(76, 175, 80, 0.5);
 }
 
-
-
+/* Priority List */
 .todo-priority-list {
     display: flex;
     flex-wrap: wrap;
@@ -192,8 +187,7 @@
     overflow-y: auto;
 }
 
-
-/* Task */
+/* Tasks Section */
 .todo-tasks-section {
     background-color: rgb(231, 199, 151);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
@@ -224,7 +218,7 @@
     text-transform: uppercase;
 }
 
-
+/* Task Filters */
 .todo-task-filters {
     display: flex;
     align-items: center;
@@ -246,7 +240,7 @@
     background-color: #fff;
 }
 
-
+/* Task List */
 .todo-tasks-list {
     margin-top: 10px;
     flex: 1;
@@ -317,7 +311,7 @@
     font-style: italic;
 }
 
-
+/* Task Details */
 .todo-details {
     background: #fff8dc;
     border-radius: 18px;
@@ -402,7 +396,7 @@
     white-space: pre-wrap;
 }
 
-
+/* Task Actions */
 .todo-task-actions {
     display: flex;
     gap: 10px;
@@ -448,8 +442,7 @@
     transform: translateY(-2px);
 }
 
-
-
+/* Status Filters */
 .todo-status-filters {
     display: flex;
     flex-direction: column;
@@ -511,7 +504,6 @@
 .todo-task-item.completed {
     border-left: 8px solid #4CAF50;
 }
-
 
 .todo-complete-btn,
 .todo-uncomplete-btn {
@@ -665,7 +657,7 @@
     background: #45a049;
 }
 
-
+/* Confirmation Dialog */
 .todo-confirmation-dialog {
     display: flex;
     position: fixed;

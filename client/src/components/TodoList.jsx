@@ -37,7 +37,7 @@ const TodoList = () => {
     if (savedCompletedTasks) setCompletedTasks(JSON.parse(savedCompletedTasks));
   }, []);
 
-  // Helper Functions
+  // Storage
   const saveTasks = (newTasks) => {
     setTasks(newTasks);
     localStorage.setItem('minecraftTasks', JSON.stringify(newTasks));
@@ -48,6 +48,7 @@ const TodoList = () => {
     localStorage.setItem('minecraftCompletedTasks', JSON.stringify(newCompletedTasks));
   };
 
+  // Task Status Functions
   const getLateTasks = () => {
     const now = new Date();
     return tasks.filter(task => new Date(task.endDate) < now);
@@ -60,6 +61,61 @@ const TodoList = () => {
         : [...prev, priority]
     );
   };
+
+  // Filter Functions
+  const filterTasksBySearch = (taskList) => {
+    if (!searchTerm) return taskList;
+    return taskList.filter(task => 
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  const filterTasksByCategory = (taskList) => {
+    if (currentCategory === 'all') return taskList;
+    return taskList.filter(task => task.category === currentCategory);
+  };
+
+  const filterTasksByPriority = (taskList) => {
+    if (selectedPriorities.length === 0) return taskList;
+    return taskList.filter(task => selectedPriorities.includes(task.priority));
+  };
+
+  // Sorting Tasks
+  const sortTasks = (taskList) => {
+    return [...taskList].sort((a, b) => {
+      let primarySort = 0;
+      switch (currentSort) {
+        case 'date':
+          primarySort = new Date(a.endDate) - new Date(b.endDate);
+          break;
+        case 'priority':
+          const priorityOrder = { high: 0, medium: 1, low: 2 };
+          primarySort = priorityOrder[a.priority] - priorityOrder[b.priority];
+          break;
+        case 'category':
+          primarySort = a.category.localeCompare(b.category);
+          break;
+        default:
+          return 0;
+      }
+      return primarySort === 0 ? new Date(a.endDate) - new Date(b.endDate) : primarySort;
+    });
+  };
+
+  // Apply all filters and sorting
+  const getFilteredAndSortedTasks = (taskList) => {
+    let filtered = taskList;
+    filtered = filterTasksBySearch(filtered);
+    filtered = filterTasksByCategory(filtered);
+    filtered = filterTasksByPriority(filtered);
+    return sortTasks(filtered);
+  };
+
+  // Get filtered and sorted tasks for each status
+  const filteredActiveTasks = getFilteredAndSortedTasks(tasks);
+  const filteredLateTasks = getFilteredAndSortedTasks(getLateTasks());
+  const filteredCompletedTasks = getFilteredAndSortedTasks(completedTasks);
 
   // Task Management Functions
   const addTask = (taskData) => {
@@ -114,42 +170,6 @@ const TodoList = () => {
     setCurrentTask(null);
   };
 
-  // Sorting and Filtering
-  const sortTasks = (taskList) => {
-    return [...taskList].sort((a, b) => {
-      let primarySort = 0;
-      switch (currentSort) {
-        case 'date':
-          primarySort = new Date(a.endDate) - new Date(b.endDate);
-          break;
-        case 'priority':
-          const priorityOrder = { high: 0, medium: 1, low: 2 };
-          primarySort = priorityOrder[a.priority] - priorityOrder[b.priority];
-          break;
-        case 'category':
-          primarySort = a.category.localeCompare(b.category);
-          break;
-        default:
-          return 0;
-      }
-      return primarySort === 0 ? new Date(a.endDate) - new Date(b.endDate) : primarySort;
-    });
-  };
-
-  const filteredTasks = tasks.filter(task => {
-    const matchesCategory = currentCategory === 'all' || task.category === currentCategory;
-    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         task.category.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesPriority = selectedPriorities.length === 0 || selectedPriorities.includes(task.priority);
-    const matchesLate = !showLateOnly || new Date(task.endDate) < new Date();
-    
-    return matchesCategory && matchesSearch && matchesPriority && matchesLate;
-  });
-
-  const sortedTasks = sortTasks(filteredTasks);
-  const sortedCompletedTasks = sortTasks(completedTasks);
-  const sortedLateTasks = sortTasks(getLateTasks());
-
   // Event Handlers
   const handleEditTask = (task) => {
     setEditingTask(task);
@@ -183,7 +203,9 @@ const TodoList = () => {
     <div className="todo-bg">
       <Navbar />
       <div className="todo-layout">
+        {/* Sidebar */}
         <aside className="todo-sidebar">
+          {/* Categories Section */}
           <div className="todo-sidebar-section">
             <h3>Categories</h3>
             <div className="todo-category-buttons">
@@ -199,6 +221,7 @@ const TodoList = () => {
             </div>
           </div>
 
+          {/* Priority Section */}
           <div className="todo-sidebar-section">
             <h3>Priority</h3>
             <div className="todo-priority-list">
@@ -214,6 +237,7 @@ const TodoList = () => {
             </div>
           </div>
 
+          {/* Task Status Section */}
           <div className="todo-sidebar-section">
             <h3>Task Status</h3>
             <div className="todo-status-filters">
@@ -224,7 +248,15 @@ const TodoList = () => {
                   setShowCompletedOnly(false);
                 }}
               >
-                <span className="todo-late-count">{getLateTasks().length}</span>
+                <span className="todo-late-count">
+                  {searchTerm ? 
+                    getLateTasks().filter(task => 
+                      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      task.category.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).length : 
+                    getLateTasks().length
+                  }
+                </span>
                 <span className="todo-late-label">Late Tasks</span>
               </button>
               <button
@@ -234,23 +266,32 @@ const TodoList = () => {
                   setShowLateOnly(false);
                 }}
               >
-                <span className="todo-completed-count">{completedTasks.length}</span>
+                <span className="todo-completed-count">
+                  {searchTerm ? 
+                    completedTasks.filter(task => 
+                      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      task.category.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).length : 
+                    completedTasks.length
+                  }
+                </span>
                 <span className="todo-completed-label">Completed Tasks</span>
               </button>
             </div>
           </div>
         </aside>
 
+        {/* Main Content */}
         <div className={`todo-main-area ${currentTask ? 'show-details' : ''}`}>
-          {/* Main Task List */}
           <main className="todo-main-list">
+            {/* Header */}
             <div className="todo-header">
               <h1>To do list - Minecraft</h1>
               <div className="todo-button-container">
                 <input
                   type="text"
                   className="todo-search"
-                  placeholder="Search"
+                  placeholder="Search tasks"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -260,11 +301,13 @@ const TodoList = () => {
               </div>
             </div>
 
+            {/* Tasks Section */}
             <div className="todo-tasks-section">
               <div className="todo-tasks-header">
                 <h2>
                   {showLateOnly ? 'Late Tasks' : 
-                   showCompletedOnly ? 'Completed Tasks' : 'Tasks'}
+                   showCompletedOnly ? 'Completed Tasks' : 
+                   searchTerm ? 'Search Results' : 'Tasks'}
                 </h2>
                 <div className="todo-task-filters">
                   <select
@@ -278,24 +321,36 @@ const TodoList = () => {
                 </div>
               </div>
 
+              {/* Task List */}
               <div className="todo-tasks-list">
                 {showCompletedOnly ? (
-                  sortedCompletedTasks.length === 0 ? (
+                  filteredCompletedTasks.length === 0 ? (
                     <p className="todo-no-tasks">No completed tasks</p>
                   ) : (
-                    sortedCompletedTasks.map(task => renderTaskItem(task, true))
+                    filteredCompletedTasks.map(task => renderTaskItem(task, true))
                   )
                 ) : showLateOnly ? (
-                  sortedLateTasks.length === 0 ? (
+                  filteredLateTasks.length === 0 ? (
                     <p className="todo-no-tasks">No late tasks</p>
                   ) : (
-                    sortedLateTasks.map(task => renderTaskItem(task))
+                    filteredLateTasks.map(task => renderTaskItem(task))
                   )
+                ) : searchTerm ? (
+                  <>
+                    {filteredActiveTasks.length === 0 && filteredCompletedTasks.length === 0 ? (
+                      <p className="todo-no-tasks">No tasks found</p>
+                    ) : (
+                      <>
+                        {filteredActiveTasks.map(task => renderTaskItem(task))}
+                        {filteredCompletedTasks.map(task => renderTaskItem(task, true))}
+                      </>
+                    )}
+                  </>
                 ) : (
-                  sortedTasks.length === 0 ? (
+                  filteredActiveTasks.length === 0 ? (
                     <p className="todo-no-tasks">No tasks found</p>
                   ) : (
-                    sortedTasks.map(task => renderTaskItem(task))
+                    filteredActiveTasks.map(task => renderTaskItem(task))
                   )
                 )}
               </div>
@@ -369,6 +424,7 @@ const TodoList = () => {
   );
 };
 
+// Task Form Modal Component
 const TaskFormModal = ({ task, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     title: task?.title || '',
