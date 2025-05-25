@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Profile from './components/Profile';
 import EditProfile from './components/Edit-profile';
 import Craft from './components/Craft';
+import TodoList from './components/TodoList';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/craft" element={<Craft />} />
+        <Route path="/to do list" element={<TodoList />} />
       </Routes>
     </Router>
   );
