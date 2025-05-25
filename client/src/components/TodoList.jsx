@@ -13,8 +13,8 @@ const CATEGORIES = [
 const PRIORITIES = ['low', 'medium', 'high'];
 
 
+
 const TodoList = () => {
-  // State Management
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [currentCategory, setCurrentCategory] = useState('all');
@@ -148,6 +148,7 @@ const TodoList = () => {
 
   const sortedTasks = sortTasks(filteredTasks);
   const sortedCompletedTasks = sortTasks(completedTasks);
+  const sortedLateTasks = sortTasks(getLateTasks());
 
   // Event Handlers
   const handleEditTask = (task) => {
@@ -285,10 +286,10 @@ const TodoList = () => {
                     sortedCompletedTasks.map(task => renderTaskItem(task, true))
                   )
                 ) : showLateOnly ? (
-                  getLateTasks().length === 0 ? (
+                  sortedLateTasks.length === 0 ? (
                     <p className="todo-no-tasks">No late tasks</p>
                   ) : (
-                    getLateTasks().map(task => renderTaskItem(task))
+                    sortedLateTasks.map(task => renderTaskItem(task))
                   )
                 ) : (
                   sortedTasks.length === 0 ? (
