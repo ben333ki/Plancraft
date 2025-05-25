@@ -200,7 +200,7 @@ const TodoList = () => {
   );
 
   return (
-    <div className="todo-bg">
+    <div className="todo-page">
       <Navbar />
       <div className="todo-layout">
         {/* Sidebar */}
