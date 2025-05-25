@@ -1,18 +1,33 @@
 package handlers
 
 import (
+	"context"
+	"fmt"
+	"time"
+
 	"plancraft/config"
 	"plancraft/middleware"
 	"plancraft/models"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// UpdateProfile handles updating user profile information
 func UpdateProfile(c *fiber.Ctx) error {
-	// Get user ID from JWT token
-	userID := c.Locals("user_id").(float64)
+	// Get user ID from JWT token (as string)
+	userIDStr := c.Locals("user_id").(string)
+	fmt.Printf("Attempting to update profile for user ID: %s\n", userIDStr)
+
+	// Convert userID string to ObjectID
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		fmt.Printf("Error converting user ID to ObjectID: %v\n", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid user ID",
+		})
+	}
 
 	type Request struct {
 		Username        string `json:"username"`
@@ -28,21 +43,30 @@ func UpdateProfile(c *fiber.Ctx) error {
 		})
 	}
 
-	// Fetch the user from database
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Fetch user from MongoDB
 	var user models.User
-	if err := config.DB.First(&user, uint(userID)).Error; err != nil {
+	err = config.UserCollection.FindOne(ctx, bson.M{"_id": userID}).Decode(&user)
+	if err != nil {
+		fmt.Printf("Error finding user in database: %v\n", err)
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "User not found",
 		})
 	}
 
+	updateFields := bson.M{}
+
 	// Update username if provided
 	if body.Username != "" {
+		updateFields["username"] = body.Username
 		user.Username = body.Username
 	}
 
 	// Update profile picture if provided
 	if body.ProfilePicture != "" {
+		updateFields["profile_picture"] = body.ProfilePicture
 		user.ProfilePicture = body.ProfilePicture
 	}
 
@@ -62,18 +86,22 @@ func UpdateProfile(c *fiber.Ctx) error {
 				"error": "Failed to hash password",
 			})
 		}
+		updateFields["password"] = string(hashedPassword)
 		user.Password = string(hashedPassword)
 	}
 
-	// Save changes to database
-	if err := config.DB.Save(&user).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to update profile",
-		})
+	// If there are updates, apply them
+	if len(updateFields) > 0 {
+		_, err := config.UserCollection.UpdateOne(ctx, bson.M{"_id": userID}, bson.M{"$set": updateFields})
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to update profile",
+			})
+		}
 	}
 
-	// Generate new token since user data has changed
-	token, err := middleware.GenerateToken(user.UserID)
+	// Generate new token (userID as hex string)
+	token, err := middleware.GenerateToken(user.UserID.Hex())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to generate token",
@@ -84,7 +112,7 @@ func UpdateProfile(c *fiber.Ctx) error {
 		"message": "Profile updated successfully",
 		"token":   token,
 		"user": fiber.Map{
-			"user_id":         user.UserID,
+			"user_id":         user.UserID.Hex(),
 			"username":        user.Username,
 			"email":           user.Email,
 			"profile_picture": user.ProfilePicture,

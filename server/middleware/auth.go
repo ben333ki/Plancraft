@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"strings"
-	"time"
 	"log"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -13,39 +13,35 @@ import (
 
 var JWTSecret []byte
 
-// init function is used to initialize JWTSecret when the application starts
+// Initialize the secret from environment variables
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-	  log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file")
 	}
-	// Load the JWT secret from environment variables
+
 	JWT_SECRET_KEY := os.Getenv("JWT_SECRET_KEY")
 	if JWT_SECRET_KEY == "" {
 		log.Fatal("JWT_SECRET_KEY is not set in environment variables")
 	}
+
 	JWTSecret = []byte(JWT_SECRET_KEY)
 }
 
-// GenerateToken generates a new JWT token for a user
-func GenerateToken(userID uint) (string, error) {
-	// Create the Claims
+// GenerateToken accepts a MongoDB ObjectID as string
+func GenerateToken(userID string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
+		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	}
 
-	// Create token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	// Generate encoded token
 	return token.SignedString(JWTSecret)
 }
 
-// AuthMiddleware verifies the JWT token
+// AuthMiddleware extracts user_id from the token and sets it in context
 func AuthMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		// Get the Authorization header
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -53,39 +49,27 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
-		// Check if the header has the Bearer prefix
 		if !strings.HasPrefix(authHeader, "Bearer ") {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "Invalid authorization header format",
 			})
 		}
 
-		// Extract the token
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
-		// Parse the token
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			// Validate the signing method
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid signing method")
 			}
 			return JWTSecret, nil
 		})
 
-		if err != nil {
+		if err != nil || !token.Valid {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Invalid token",
+				"error": "Invalid or expired token",
 			})
 		}
 
-		// Check if the token is valid
-		if !token.Valid {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"error": "Invalid token",
-			})
-		}
-
-		// Get the claims
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -93,9 +77,14 @@ func AuthMiddleware() fiber.Handler {
 			})
 		}
 
-		// Add the user ID to the context
-		c.Locals("user_id", claims["user_id"])
+		userID, ok := claims["user_id"].(string)
+		if !ok {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Invalid user ID in token",
+			})
+		}
 
+		c.Locals("user_id", userID)
 		return c.Next()
 	}
 }

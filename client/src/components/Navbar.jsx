@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Navbar.css';
+import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
 
     const handleLogin = () => {
         navigate('/login');
+    }
+
+    const handleProfile = () => {
+        navigate('/profile');
     }
 
     return (
@@ -37,10 +43,23 @@ const Navbar = () => {
                         <span>Calculator</span>
                     </Link>
                 </div>
-                <div className="navbar-menu-right">
-                    <div className="navbar-profile">
-                        <img src="Image/icon-steve-profile.webp" alt="Profile" />
-                        <button className="navbar-login" onClick={handleLogin}>LOGIN</button>
+                <div className="nav-right">
+                    <div className="nav-profile-container">
+                        {user ? (
+                            <div className="user-profile" onClick={handleProfile}>
+                                <img 
+                                    src={user.profile_picture || "Image/icon-steve-profile.webp"} 
+                                    alt="Profile" 
+                                    className="profile-image"
+                                />
+                                <span className="username">{user.username}</span>
+                            </div>
+                        ) : (
+                            <>
+                                <img src="Image/icon-steve-profile.webp" alt="Profile" />
+                                <button className="navbar-login-btn" onClick={handleLogin}>LOGIN</button>
+                            </>
+                        )}
                     </div>
                 </div>
             </nav>

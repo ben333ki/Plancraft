@@ -1,19 +1,21 @@
 package handlers
 
 import (
+	"context"
 	"plancraft/config"
 	"plancraft/middleware"
 	"plancraft/models"
 	"regexp"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
-
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// CreateAccount: Register a new user (and login immediately)
+// CreateAccount: Register a new user
 func CreateAccount(c *fiber.Ctx) error {
-
 	type Request struct {
 		Username string `json:"username"`
 		Email    string `json:"email"`
@@ -36,7 +38,8 @@ func CreateAccount(c *fiber.Ctx) error {
 
 	// Check if email already exists
 	var existingUser models.User
-	if err := config.DB.Where("email = ?", body.Email).First(&existingUser).Error; err == nil {
+	err := config.UserCollection.FindOne(context.Background(), bson.M{"email": body.Email}).Decode(&existingUser)
+	if err == nil {
 		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
 			"error": "Email already registered",
 		})
@@ -53,35 +56,37 @@ func CreateAccount(c *fiber.Ctx) error {
 	// Default profile picture
 	defaultProfilePicture := "https://cdn-icons-png.flaticon.com/512/149/149071.png"
 
-	// Create the new user
+	// Create user document
 	newUser := models.User{
+		UserID:         primitive.NewObjectID(),
 		Username:       body.Username,
 		Email:          body.Email,
 		Password:       string(hashedPassword),
 		ProfilePicture: defaultProfilePicture,
+		CreatedAt:      time.Now(),
 	}
 
-	// Save the user to the database
-	if err := config.DB.Create(&newUser).Error; err != nil {
+	// Insert into MongoDB
+	_, err = config.UserCollection.InsertOne(context.Background(), newUser)
+	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to create user",
 		})
 	}
 
-	// Generate JWT token
-	token, err := middleware.GenerateToken(newUser.UserID)
+	// Generate JWT
+	token, err := middleware.GenerateToken(newUser.UserID.Hex())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to generate token",
 		})
 	}
 
-	// Respond with user data and token
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "Account created successfully",
 		"token":   token,
 		"user": fiber.Map{
-			"user_id":         newUser.UserID,
+			"user_id":         newUser.UserID.Hex(),
 			"username":        newUser.Username,
 			"email":           newUser.Email,
 			"profile_picture": newUser.ProfilePicture,

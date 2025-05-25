@@ -13,18 +13,6 @@ export const getRecipeByName = (itemName) => {
         null
       ],
       resultSlot: { name: 'Iron Pickaxe', image: 'Iron_Pickaxe.webp' },
-      levelRequirements: {
-        level3: [
-          { name: 'Stick', image: 'Stick.webp', amount: 2 },
-          { name: 'Iron', image: 'iron.png', amount: 3 }
-        ],
-        level2: [
-          { name: 'Oak Planks', image: 'Oak_Planks.webp', amount: 2 }
-        ],
-        level1: [
-          { name: 'Oak', image: 'Oak.webp', amount: 1 }
-        ]
-      }
     },
     'Oak Planks': {
       gridSlots: [
@@ -39,13 +27,6 @@ export const getRecipeByName = (itemName) => {
         null
       ],
       resultSlot: { name: 'Oak Planks', image: 'Oak_Planks.webp' },
-      levelRequirements: {
-        level3: [],
-        level2: [],
-        level1: [
-          { name: 'Oak', image: 'Oak.webp', amount: 1 }
-        ]
-      }
     },
     'Iron Axe': {
       gridSlots: [
@@ -60,18 +41,6 @@ export const getRecipeByName = (itemName) => {
         null
       ],
       resultSlot: { name: 'Iron Axe', image: 'Iron_axe.webp' },
-      levelRequirements: {
-        level3: [
-          { name: 'Stick', image: 'Stick.webp', amount: 2 },
-          { name: 'Iron', image: 'iron.png', amount: 3 }
-        ],
-        level2: [
-          { name: 'Oak Planks', image: 'Oak_Planks.webp', amount: 2 }
-        ],
-        level1: [
-          { name: 'Oak', image: 'Oak.webp', amount: 1 }
-        ]
-      }
     },
     'Crafting Table': {
       gridSlots: [
@@ -86,21 +55,11 @@ export const getRecipeByName = (itemName) => {
         { name: 'Oak Planks', image: 'Oak_Planks.webp' }
       ],
       resultSlot: { name: 'Crafting Table', image: 'Crafting_Table.webp' },
-      levelRequirements: {
-        level3: [],
-        level2: [
-          { name: 'Oak Planks', image: 'Oak_Planks.webp', amount: 4 }
-        ],
-        level1: [
-          { name: 'Oak', image: 'Oak.webp', amount: 1 }
-        ]
-      }
     }
   };
 
   return recipes[itemName] || {
     gridSlots: Array(9).fill(null),
     resultSlot: null,
-    levelRequirements: { level3: [], level2: [], level1: [] }
   };
 }; 
