@@ -14,6 +14,7 @@ const CreateAccount = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   // --- Handle Form Submit ---
   const handleSubmit = async (e) => {
@@ -50,6 +51,10 @@ const CreateAccount = () => {
     } catch (error) {
       setError('Error creating account: ' + error.message);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -99,10 +104,10 @@ const CreateAccount = () => {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div className="form-group">
+              <div className="form-group create-account-password-group">
                 <label htmlFor="password">Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   name="password"
                   placeholder="Password"
@@ -111,11 +116,17 @@ const CreateAccount = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <button type="button" className="create-account-password-toggle" onClick={togglePasswordVisibility}>
+                  <img 
+                      src={showPassword ? 'Image/icon-open eye.png' : 'Image/icon-close eye.png'}
+                      alt={showPassword ? 'Hide password' : 'Show password'}
+                  />
+                </button>
               </div>
-              <div className="form-group">
+              <div className="form-group create-account-password-group">
                 <label htmlFor="confirm-password">Confirm Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="confirm-password"
                   name="confirm-password"
                   placeholder="Confirm your password"
@@ -124,6 +135,12 @@ const CreateAccount = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
+                <button type="button" className="create-account-password-toggle" onClick={togglePasswordVisibility}>
+                  <img 
+                      src={showPassword ? 'Image/icon-open eye.png' : 'Image/icon-close eye.png'}
+                      alt={showPassword ? 'Hide password' : 'Show password'}
+                  />
+                </button>
               </div>
               <button type="submit" className="create-account-btn">
                 Create Account
