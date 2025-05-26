@@ -7,11 +7,11 @@ const categories = [
 
 const ItemCategories = ({ activeCategory, setActiveCategory }) => {
   return (
-    <div className="categories">
+    <div className="craft-categories">
       {categories.map((category) => (
         <button
           key={category}
-          className={`category-btn ${activeCategory === category ? 'active' : ''}`}
+          className={`craft-category-btn ${activeCategory === category ? 'active' : ''}`}
           onClick={() => setActiveCategory(category)}
         >
           {category}

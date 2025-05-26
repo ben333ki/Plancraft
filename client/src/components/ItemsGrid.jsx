@@ -7,11 +7,11 @@ const ItemsGrid = ({ activeCategory, onItemSelect, items }) => {
     );
 
     return (
-        <div className="items-grid">
+        <div className="craft-items-grid">
             {filteredItems.map((itemData, index) => (
                 <div 
                     key={index} 
-                    className="item-slot"
+                    className="craft-item-slot"
                     onClick={() => onItemSelect(itemData.item.ItemName)}
                 >
                     <img 

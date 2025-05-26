@@ -5,7 +5,7 @@ const Tooltip = () => {
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      const target = e.target.closest('.item-slot');
+      const target = e.target.closest('.craft-item-slot');
       if (target && target.querySelector('img')) {
         setTooltip({
           show: true,
@@ -33,7 +33,7 @@ const Tooltip = () => {
 
   return (
     <div
-      className="item-tooltip"
+      className="craft-item-tooltip"
       style={{
         left: tooltip.x,
         top: tooltip.y,

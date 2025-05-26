@@ -83,7 +83,7 @@ const Craft = () => {
         return (
             <>
                 <Navbar />
-                <div className="loading">Loading items...</div>
+                <div className="craft-loading">Loading items...</div>
             </>
         );
     }
@@ -92,7 +92,7 @@ const Craft = () => {
         return (
             <>
                 <Navbar />
-                <div className="error">Error: {error}</div>
+                <div className="craft-error">Error: {error}</div>
             </>
         );
     }
@@ -101,12 +101,12 @@ const Craft = () => {
         <>
             <Navbar />
             <Leaves />
-            <div className="home-bg">
-                <div className="content">
-                    <div className="content-box">
-                        <div className="recipe-display">
+            <div className="craft-page">
+                <div className="craft-content">
+                    <div className="craft-content-box">
+                        <div className="craft-recipe-display">
                             <h1>Crafting</h1>
-                            <div className="crafting-container">
+                            <div className="craft-crafting-container">
                                 <CraftingGrid 
                                     title={recipe.title} 
                                     gridSlots={recipe.gridSlots} 
@@ -115,7 +115,7 @@ const Craft = () => {
                             </div>
                         </div>
 
-                        <div className="items-section">
+                        <div className="craft-items-section">
                             <ItemCategories 
                                 activeCategory={activeCategory} 
                                 setActiveCategory={setActiveCategory} 
