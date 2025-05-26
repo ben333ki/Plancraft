@@ -15,6 +15,7 @@ const EditProfile = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showAllPasswords, setShowAllPasswords] = useState(false);
     const imageInputRef = useRef(null);
 
     const handleImageUpload = (e) => {
@@ -29,6 +30,10 @@ const EditProfile = () => {
 
     const togglePasswordFields = () => {
         setShowPasswordFields(prev => !prev);
+    };
+
+    const toggleAllPasswordsVisibility = () => {
+        setShowAllPasswords(!showAllPasswords);
     };
 
     const handleSaveProfile = async (e) => {
@@ -87,20 +92,20 @@ const EditProfile = () => {
         <>
             <Navbar />
 
-            <div className="profile-page">
-                <div className="profile-container">
-                    <div className="profile-box">
-                        <div className="profile-header">
+            <div className="edit-profile-page">
+                <div className="edit-profile-container">
+                    <div className="edit-profile-box">
+                        <div className="edit-profile-header">
                             <h1>EDIT PROFILE</h1>
                         </div>
 
-                        {error && <div className="error-message">{error}</div>}
+                        {error && <div className="edit-profile-error-message">{error}</div>}
 
-                        <div className="profile-picture-section">
-                            <div className="profile-picture">
+                        <div className="edit-profile-picture-section">
+                            <div className="edit-profile-picture">
                                 <img src={profileImage} alt="Profile" />
-                                <div className="edit-overlay">
-                                    <label className="edit-icon" onClick={() => imageInputRef.current.click()}>
+                                <div className="edit-profile-edit-overlay">
+                                    <label className="edit-profile-edit-icon" onClick={() => imageInputRef.current.click()}>
                                         <img src="Image/icon-edit-profile.png" alt="Edit" />
                                     </label>
                                     <input
@@ -114,8 +119,8 @@ const EditProfile = () => {
                             </div>
                         </div>
 
-                        <form onSubmit={handleSaveProfile} className="profile-form">
-                            <div className="form-group">
+                        <form onSubmit={handleSaveProfile} className="edit-profile-form">
+                            <div className="edit-profile-form-group">
                                 <label htmlFor="username">User-name</label>
                                 <input
                                     type="text"
@@ -127,7 +132,7 @@ const EditProfile = () => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            <div className="edit-profile-form-group">
                                 <label htmlFor="email">Email</label>
                                 <input
                                     type="email"
@@ -135,81 +140,98 @@ const EditProfile = () => {
                                     name="email"
                                     value={user?.email || ''}
                                     readOnly
-                                    className="readonly-input"
+                                    className="edit-profile-readonly-input"
                                     required
                                 />
                             </div>
 
-                            <div className="change-password-section">
+                            <div className="edit-profile-change-password-section">
                                 <button
                                     type="button"
-                                    className={`change-password-btn ${showPasswordFields ? 'active' : ''}`}
+                                    className={`edit-profile-change-password-btn ${showPasswordFields ? 'active' : ''}`}
                                     onClick={togglePasswordFields}
                                 >
                                     Change Password
                                 </button>
 
                                 {showPasswordFields && (
-                                    <div className="password-fields">
-                                        <div className="form-group">
+                                    <div className="edit-profile-password-fields">
+                                        <div className="edit-profile-form-group">
                                             <label htmlFor="current-password">Current Password</label>
-                                            <div className="password-container">
+                                            <div className="edit-profile-password-input-wrapper">
                                                 <input
-                                                    type="password"
+                                                    type={showAllPasswords ? 'text' : 'password'}
                                                     id="current-password"
                                                     name="current-password"
                                                     placeholder="Enter current password"
                                                     value={currentPassword}
                                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                                 />
+                                                <button type="button" className="edit-profile-password-toggle" onClick={toggleAllPasswordsVisibility}>
+                                                    <img
+                                                        src={showAllPasswords ? 'Image/icon-open eye.png' : 'Image/icon-close eye.png'}
+                                                        alt={showAllPasswords ? 'Hide password' : 'Show password'}
+                                                    />
+                                                </button>
                                             </div>
                                         </div>
 
-                                        <div className="form-group">
+                                        <div className="edit-profile-form-group">
                                             <label htmlFor="new-password">New Password</label>
-                                            <div className="password-container">
+                                            <div className="edit-profile-password-input-wrapper">
                                                 <input
-                                                    type="password"
+                                                    type={showAllPasswords ? 'text' : 'password'}
                                                     id="new-password"
                                                     name="new-password"
                                                     placeholder="Enter new password"
                                                     value={newPassword}
                                                     onChange={(e) => setNewPassword(e.target.value)}
                                                 />
+                                                <button type="button" className="edit-profile-password-toggle" onClick={toggleAllPasswordsVisibility}>
+                                                    <img
+                                                        src={showAllPasswords ? 'Image/icon-open eye.png' : 'Image/icon-close eye.png'}
+                                                        alt={showAllPasswords ? 'Hide password' : 'Show password'}
+                                                    />
+                                                </button>
                                             </div>
                                         </div>
 
-                                        <div className="form-group">
+                                        <div className="edit-profile-form-group">
                                             <label htmlFor="confirm-password">Confirm New Password</label>
-                                            <div className="password-container">
+                                            <div className="edit-profile-password-input-wrapper">
                                                 <input
-                                                    type="password"
+                                                    type={showAllPasswords ? 'text' : 'password'}
                                                     id="confirm-password"
                                                     name="confirm-password"
                                                     placeholder="Confirm new password"
                                                     value={confirmPassword}
                                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                                 />
+                                                <button type="button" className="edit-profile-password-toggle" onClick={toggleAllPasswordsVisibility}>
+                                                    <img
+                                                        src={showAllPasswords ? 'Image/icon-open eye.png' : 'Image/icon-close eye.png'}
+                                                        alt={showAllPasswords ? 'Hide password' : 'Show password'}
+                                                    />
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 )}
                             </div>
 
-                            <div className="profile-buttons">
-                                <button type="submit" className="save-btn">Save Profile</button>
-                                <button type="button" className="cancel-btn" onClick={handleCancel}>Cancel</button>
+                            <div className="edit-profile-buttons">
+                                <button type="submit" className="edit-profile-save-btn">Save</button>
+                                <button type="button" className="edit-profile-cancel-btn" onClick={handleCancel}>Cancel</button>
                             </div>
                         </form>
                     </div>
 
-                    {/* Success Popup */}
                     {showSuccessPopup && (
-                        <div className="popup-overlay" onClick={() => setShowSuccessPopup(false)}>
-                            <div className="popup-content" onClick={e => e.stopPropagation()}>
+                        <div className="edit-profile-popup-overlay" onClick={() => setShowSuccessPopup(false)}>
+                            <div className="edit-profile-popup-content" onClick={e => e.stopPropagation()}>
                                 <img src="Image/icon-check.png" alt="Success" />
                                 <h2>Profile updated successfully</h2>
-                                <button className="popup-close-btn" onClick={() => setShowSuccessPopup(false)}>
+                                <button className="edit-profile-popup-close-btn" onClick={() => setShowSuccessPopup(false)}>
                                     Close
                                 </button>
                             </div>

@@ -27,6 +27,7 @@
     min-height: 100vh;
 }
 
+/* Form Box */
 .profile-box {
     background: rgba(167, 202, 115, 0.95);
     padding: 30px;
@@ -39,7 +40,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     transform: translateY(0);
     transition: all 0.3s ease;
-    margin: 60px 0 !important;
+    margin: 80px 0;
 }
 
 .profile-box:hover {
@@ -48,9 +49,9 @@
                 inset 0 0 80px rgba(0, 0, 0, 0.1);
 }
 
-/* Decorative boxes */
-.box-top-right,
-.box-bottom-right {
+/* Decorative Boxes */
+.profile-box-decor-top-right,
+.profile-box-decor-bottom-right {
     content: '';
     position: absolute;
     width: 50px;
@@ -61,8 +62,8 @@
     transition: all 0.3s ease;
 }
 
-.smallbox-top-right,
-.smallbox-bottom-right {
+.profile-smallbox-decor-top-right,
+.profile-smallbox-decor-bottom-right {
     content: '';
     position: absolute;
     width: 20px;
@@ -73,7 +74,15 @@
     transition: all 0.3s ease;
 }
 
-/* Profile Picture Section */
+.profile-box:hover .profile-box-decor-top-right,
+.profile-box:hover .profile-box-decor-bottom-right,
+.profile-box:hover .profile-smallbox-decor-top-right,
+.profile-box:hover .profile-smallbox-decor-bottom-right {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Profile Picture */
 .profile-picture-section {
     margin: 20px 0;
 }
@@ -95,7 +104,7 @@
     object-fit: cover;
 }
 
-.edit-overlay {
+.profile-edit-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -106,26 +115,26 @@
     transition: opacity 0.3s ease;
 }
 
-.profile-picture:hover .edit-overlay {
+.profile-picture:hover .profile-edit-overlay {
     opacity: 1;
 }
 
-.edit-icon {
+.profile-edit-icon {
     cursor: pointer;
 }
 
-.edit-icon img {
+.profile-edit-icon img {
     width: 20px;
     height: 20px;
     filter: brightness(0) invert(1);
 }
 
-/* Form Styling */
+/* Form */
 .profile-form {
     margin-top: 20px;
 }
 
-.form-group {
+.profile-form-group {
     margin-bottom: 15px;
     text-align: left;
 }
@@ -145,6 +154,7 @@
     background: rgba(255, 255, 255, 0.9);
     font-size: 0.85em;
     transition: all 0.3s ease;
+    border-bottom: 0px solid #532911 !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -154,13 +164,13 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Readonly Input Styling */
-.readonly-input {
+/* Readonly Input */
+.profile-readonly-input {
     background: rgba(255, 255, 255, 0.9) !important;
     cursor: default;
 }
 
-.readonly-input:focus {
+.profile-readonly-input:focus {
     background: rgba(255, 255, 255, 0.9) !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -173,34 +183,30 @@
     margin-top: 25px;
 }
 
-.save-btn, .cancel-btn {
+.profile-edit-btn, .profile-logout-btn {
     padding: 10px 25px;
     border: none;
     border-radius: 6px;
     font-size: 1em;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-transform: uppercase;
 }
 
-.save-btn {
+.profile-edit-btn, .profile-logout-btn {
     background: #532911;
     color: white;
 }
 
-.cancel-btn {
-    background: #532911;
-    color: white;
+.profile-edit-btn:hover {
+    background: rgba(27, 132, 218);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
 }
 
-.save-btn:hover {
-    background: #3d1f0d;
+.profile-logout-btn:hover {
+    background: #e64343;
     transform: translateY(-2px);
-}
-
-.cancel-btn:hover {
-    background: #3d1f0d;
-    transform: translateY(-2px);
+    transition: all 0.3s ease;
 }
 
 /* Header */
@@ -212,8 +218,8 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Popup Styling */
-.popup-overlay {
+/* Popup */
+.profile-popup-overlay {
     display: none;
     position: fixed;
     top: 0;
@@ -226,27 +232,27 @@
     z-index: 1000;
 }
 
-.popup-content {
+.profile-popup-content {
     background: #fff;
     padding: 30px;
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    animation: popupFadeIn 0.3s ease;
+    animation: profilePopupFadeIn 0.3s ease;
 }
 
-.popup-content img {
+.profile-popup-content img {
     width: 50px;
     height: 50px;
     margin-bottom: 15px;
 }
 
-.popup-content h2 {
+.profile-popup-content h2 {
     margin-bottom: 20px;
     font-size: 1.2em;
 }
 
-.popup-close-btn {
+.profile-popup-close-btn {
     padding: 8px 20px;
     background: #532911;
     color: white;
@@ -256,12 +262,13 @@
     transition: all 0.3s ease;
 }
 
-.popup-close-btn:hover {
+.profile-popup-close-btn:hover {
     background: #3d1f0d;
     transform: translateY(-2px);
 }
 
-@keyframes popupFadeIn {
+/* Animations */
+@keyframes profilePopupFadeIn {
     from {
         opacity: 0;
         transform: scale(0.9);

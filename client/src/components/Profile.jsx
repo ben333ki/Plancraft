@@ -43,12 +43,12 @@ const Profile = () => {
             </div>
 
             <form className="profile-form">
-              <div className="form-group">
+              <div className="profile-form-group">
                 <label htmlFor="username">User-name</label>
                 <input type="text" id="username" name="username" value={user?.username || ''} readOnly />
               </div>
 
-              <div className="form-group">
+              <div className="profile-form-group">
                 <label htmlFor="email">Email</label>
                 <input
                   type="email"
@@ -56,16 +56,16 @@ const Profile = () => {
                   name="email"
                   value={user?.email || ''}
                   readOnly
-                  className="readonly-input"
+                  className="profile-readonly-input"
                   required
                 />
               </div>
 
               <div className="profile-buttons">
-                <button type="button" className="save-btn" onClick={goToEditProfile}>
+                <button type="button" className="profile-edit-btn" onClick={goToEditProfile}>
                   Edit Profile
                 </button>
-                <button type="button" className="logout-btn" onClick={handleLogout}>
+                <button type="button" className="profile-logout-btn" onClick={handleLogout}>
                   Logout
                 </button>
               </div>
@@ -75,11 +75,11 @@ const Profile = () => {
 
         {/* Success Popup */}
         {isPopupVisible && (
-          <div className="popup-overlay" id="successPopup">
-            <div className="popup-content">
+          <div className="profile-popup-overlay" id="successPopup">
+            <div className="profile-popup-content">
               <img src="/Image/icon-check.png" alt="Success" />
               <h2>บันทึกรหัสผ่านสำเร็จ</h2>
-              <button className="popup-close-btn" onClick={closePopup}>
+              <button className="profile-popup-close-btn" onClick={closePopup}>
                 ปิด
               </button>
             </div>

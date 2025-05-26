@@ -1,33 +1,33 @@
-.profile-page {
+.edit-profile-page {
     min-height: 100vh;
+    width: 100vw;
     display: flex;
+    flex-direction: column;
     position: relative;
     overflow-y: auto;
     background: url('Image/BG-profile.png') no-repeat center center fixed;
     background-size: cover;
-}
-
-.profile-page > img {
     height: 100vh;
-    width: 32%;
-    object-fit: cover;
-    object-position: left;
-    position: fixed;
 }
 
-.profile-container {
-    width: 80%;
+.edit-profile-page > img {
+    display: none;
+}
+
+.edit-profile-container {
+    width: 100%;
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     padding: 20px;
     position: relative;
     z-index: 2;
-    margin: 0 auto;
-    min-height: 100vh;
+    margin: 80px auto;
 }
 
-.profile-box {
+/* Form Box */
+.edit-profile-box {
     background: rgba(167, 202, 115, 0.95);
     padding: 30px;
     border-radius: 15px;
@@ -39,18 +39,18 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     transform: translateY(0);
     transition: all 0.3s ease;
-    margin: 20px 0;
+    margin: 0 auto;
 }
 
-.profile-box:hover {
+.edit-profile-box:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15),
                 inset 0 0 80px rgba(0, 0, 0, 0.1);
 }
 
-/* Decorative boxes */
-.box-top-right,
-.box-bottom-right {
+/* Decorative Elements */
+.edit-profile-box .edit-profile-box-decor-top-right,
+.edit-profile-box .edit-profile-box-decor-bottom-right {
     content: '';
     position: absolute;
     width: 50px;
@@ -61,8 +61,8 @@
     transition: all 0.3s ease;
 }
 
-.smallbox-top-right,
-.smallbox-bottom-right {
+.edit-profile-box .edit-profile-smallbox-decor-top-right,
+.edit-profile-box .edit-profile-smallbox-decor-bottom-right {
     content: '';
     position: absolute;
     width: 20px;
@@ -73,12 +73,20 @@
     transition: all 0.3s ease;
 }
 
+.edit-profile-box:hover .edit-profile-box-decor-top-right,
+.edit-profile-box:hover .edit-profile-box-decor-bottom-right,
+.edit-profile-box:hover .edit-profile-smallbox-decor-top-right,
+.edit-profile-box:hover .edit-profile-smallbox-decor-bottom-right {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
 /* Profile Picture Section */
-.profile-picture-section {
+.edit-profile-picture-section {
     margin: 20px 0;
 }
 
-.profile-picture {
+.edit-profile-picture {
     position: relative;
     width: 120px;
     height: 120px;
@@ -89,13 +97,13 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.profile-picture img {
+.edit-profile-picture img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.edit-overlay {
+.edit-profile-edit-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -106,38 +114,38 @@
     transition: opacity 0.3s ease;
 }
 
-.profile-picture:hover .edit-overlay {
+.edit-profile-picture:hover .edit-profile-edit-overlay {
     opacity: 1;
 }
 
-.edit-icon {
+.edit-profile-edit-icon {
     cursor: pointer;
 }
 
-.edit-icon img {
+.edit-profile-edit-icon img {
     width: 20px;
     height: 20px;
     filter: brightness(0) invert(1);
 }
 
 /* Form Styling */
-.profile-form {
+.edit-profile-form {
     margin-top: 20px;
 }
 
-.form-group {
+.edit-profile-form-group {
     margin-bottom: 15px;
     text-align: left;
 }
 
-label {
+.edit-profile-form label {
     display: block;
     margin-bottom: 4px;
     color: #000;
     font-size: 1em;
 }
 
-input {
+.edit-profile-form input {
     width: 100%;
     padding: 10px;
     border: none;
@@ -148,205 +156,54 @@ input {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-input:focus {
-    outline: none;
-    background: #fff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Readonly Input Styling */
-.readonly-input {
+/* Readonly Input */
+.edit-profile-readonly-input {
     background: #e0e0e0 !important;
     cursor: not-allowed;
     color: #666;
 }
 
-.readonly-input:focus {
+.edit-profile-readonly-input:focus {
     background: #e0e0e0 !important;
     box-shadow: none;
 }
 
-/* Buttons */
-.profile-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 25px;
-}
-
-.save-btn, .cancel-btn {
-    padding: 10px 25px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-}
-
-.save-btn {
-    background: #532911;
-    color: white;
-}
-
-.cancel-btn {
-    background: #532911;
-    color: white;
-}
-
-.save-btn:hover {
-    background: #3d1f0d;
-    transform: translateY(-2px);
-}
-
-.cancel-btn:hover {
-    background: #3d1f0d;
-    transform: translateY(-2px);
-}
-
-/* Header */
-.profile-header h1 {
-    color: #000;
-    font-size: 1.8em;
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    color: #000;
-    font-size: 1.8em;
-    margin-bottom: 15px;
-    letter-spacing: 2px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.login-link {
-    display: inline-block;
-    margin: 15px;
-    color: #000;
-    text-decoration: none;
-    font-size: 0.9em;
+/* Password Input*/
+.edit-profile-password-input-wrapper {
     position: relative;
-    padding: 5px 0;
 }
 
-.login-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: #532911;
-    transition: width 0.3s ease;
+.edit-profile-password-input-wrapper input {
+    padding-right: 40px;
 }
 
-.login-link:hover::after {
-    width: 100%;
-}
-
-.password-container {
-    position: relative;
-    width: 100%;
-}
-
-.toggle-password {
+.edit-profile-password-toggle {
     position: absolute;
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
+    background: none;
+    border: none;
     cursor: pointer;
-    color: #666;
-    transition: all 0.3s ease;
-    font-size: 1.1em;
-    padding: 5px;
-}
-
-.toggle-password:hover {
-    color: #532911;
-    transform: translateY(-50%) scale(1.1);
-}
-
-.password-container input {
-    padding-right: 40px;
-}
-
-.remember-me {
+    padding: 0;
     display: flex;
     align-items: center;
-    margin: 10px 0;
-    padding-left: 5px;
+    justify-content: center;
 }
 
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 36px;
-    height: 18px;
-    margin-right: 10px;
+.edit-profile-password-toggle img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 12px;
-    width: 12px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
-}
-
-input:checked + .slider {
-    background-color: #532911;
-}
-
-input:focus + .slider {
-    box-shadow: 0 0 1px #532911;
-}
-
-input:checked + .slider:before {
-    transform: translateX(18px);
-}
-
-.slider.round {
-    border-radius: 24px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
-}
-
-.remember-text {
-    font-size: 1em;
-    cursor: pointer;
-}
-
-/* Change Password Section */
-.change-password-section {
+/* Change Password */
+.edit-profile-change-password-section {
     margin: 20px 0;
     text-align: center;
 }
 
-.change-password-btn {
+.edit-profile-change-password-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -361,16 +218,16 @@ input:checked + .slider:before {
     font-size: 0.9em;
 }
 
-.change-password-btn:hover {
+.edit-profile-change-password-btn:hover {
     background: #a36c1a;
     transform: translateY(-2px);
 }
 
-.change-password-btn.active {
+.edit-profile-change-password-btn.active {
     background: #678042;
 }
 
-.password-fields {
+.edit-profile-password-fields {
     margin-top: 20px;
     padding: 15px;
     background: rgba(255, 255, 255, 0.1);
@@ -380,29 +237,53 @@ input:checked + .slider:before {
     overflow-y: auto;
 }
 
-.password-buttons {
+/* Buttons */
+.edit-profile-buttons {
     display: flex;
+    gap: 15px;
     justify-content: center;
-    margin-top: 15px;
-    padding-bottom: 10px;
+    margin-top: 25px;
 }
 
-.save-password-btn {
-    padding: 8px 20px;
-    background: #7a5218;
-    color: white;
+.edit-profile-save-btn, .edit-profile-cancel-btn {
+    padding: 10px 25px;
     border: none;
     border-radius: 6px;
+    font-size: 1em;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9em;
+    color: white;
 }
 
-.save-password-btn:hover {
-    background: #a36c1a;
+.edit-profile-save-btn {
+    background: #4CAF50;
+}
+
+.edit-profile-cancel-btn {
+    background: #d9534f;
+}
+
+.edit-profile-save-btn:hover {
+    background: #4e9c21;
     transform: translateY(-2px);
+    transition: all 0.3s ease;
 }
 
+.edit-profile-cancel-btn:hover {
+    background: #e64343;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* Header */
+.edit-profile-header h1 {
+    color: #000;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -414,8 +295,19 @@ input:checked + .slider:before {
     }
 }
 
-/* Popup Styling */
-.popup-overlay {
+@keyframes editProfilePopupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Popup */
+.edit-profile-popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -429,30 +321,30 @@ input:checked + .slider:before {
     overflow-y: auto;
 }
 
-.popup-content {
+.edit-profile-popup-content {
     background: #fff;
     padding: 30px;
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    animation: popupFadeIn 0.3s ease;
+    animation: editProfilePopupFadeIn 0.3s ease;
     margin: 20px;
     max-width: 90%;
     width: 400px;
 }
 
-.popup-content img {
+.edit-profile-popup-content img {
     width: 50px;
     height: 50px;
     margin-bottom: 15px;
 }
 
-.popup-content h2 {
+.edit-profile-popup-content h2 {
     margin-bottom: 20px;
     font-size: 1.2em;
 }
 
-.popup-close-btn {
+.edit-profile-popup-close-btn {
     padding: 8px 20px;
     background: #532911;
     color: white;
@@ -462,18 +354,7 @@ input:checked + .slider:before {
     transition: all 0.3s ease;
 }
 
-.popup-close-btn:hover {
+.edit-profile-popup-close-btn:hover {
     background: #3d1f0d;
     transform: translateY(-2px);
-}
-
-@keyframes popupFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
