@@ -37,6 +37,16 @@ func main() {
 	app.Post("/login", handlers.Login)
 	app.Get("/items", handlers.GetItems)
 
+	todolist := app.Group("/todolist/tasks")
+	todolist.Get("/", handlers.GetAllTasks)
+	todolist.Post("/", handlers.CreateTask)
+	todolist.Put("/:id", handlers.UpdateTask)
+	todolist.Delete("/:id", handlers.DeleteTask)
+	todolist.Patch("/:id/complete", handlers.MarkTaskComplete)
+	todolist.Patch("/:id/uncomplete", handlers.MarkTaskUncomplete)
+	todolist.Get("/late", handlers.GetLateTasks)
+
+	
 	// Protected routes
 	protected := app.Group("/api", middleware.AuthMiddleware())
 	protected.Get("/test-auth", handlers.TestAuth)

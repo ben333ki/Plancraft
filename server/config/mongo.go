@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -13,6 +14,7 @@ var MongoDB *mongo.Database
 var UserCollection *mongo.Collection
 var ItemCollection *mongo.Collection
 var RecipeCollection *mongo.Collection
+var ToDoListCollection *mongo.Collection
 
 func ConnectMongoDB(ctx context.Context) error {
 	uri := os.Getenv("MONGODB_URI")
@@ -31,6 +33,7 @@ func ConnectMongoDB(ctx context.Context) error {
 	UserCollection = MongoDB.Collection("users")
 	ItemCollection = MongoDB.Collection("items")
 	RecipeCollection = MongoDB.Collection("recipes")
+	ToDoListCollection = MongoDB.Collection("todolists")
 
 	// Create indexes if they don't exist
 	userIndexModel := mongo.IndexModel{
@@ -54,6 +57,14 @@ func ConnectMongoDB(ctx context.Context) error {
 		Options: options.Index().SetUnique(true),
 	}
 
+	todoListIndexModel := mongo.IndexModel{
+		Keys: bson.D{
+			{Key: "userID", Value: 1},
+			{Key: "title", Value: 1},
+		},
+		Options: options.Index().SetUnique(true),
+	}
+
 	// Create indexes
 	_, err = UserCollection.Indexes().CreateOne(ctx, userIndexModel)
 	if err != nil {
@@ -66,6 +77,11 @@ func ConnectMongoDB(ctx context.Context) error {
 	}
 
 	_, err = RecipeCollection.Indexes().CreateOne(ctx, recipeIndexModel)
+	if err != nil {
+		return err
+	}
+
+	_, err = ToDoListCollection.Indexes().CreateOne(ctx, todoListIndexModel)
 	if err != nil {
 		return err
 	}

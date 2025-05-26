@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import '../styles/TodoList.css';
 import Navbar from './Navbar';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:3000/todolist/tasks';
 
 const CATEGORIES = [
   { key: 'all', label: 'All Tasks' },
@@ -12,11 +15,84 @@ const CATEGORIES = [
 
 const PRIORITIES = ['low', 'medium', 'high'];
 
+// API Service Functions
+const todoApi = {
+  getAllTasks: async (filters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.category) params.append('category', filters.category);
+    if (filters.priority) params.append('priority', filters.priority);
+    if (filters.status) params.append('status', filters.status);
+    if (filters.search) params.append('search', filters.search);
+    
+    const response = await axios.get(`${API_BASE_URL}?${params}`);
+    return response.data.tasks;
+  },
 
+  createTask: async (taskData) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}`, {
+        title: taskData.title,
+        description: taskData.description,
+        category: taskData.category,
+        priority: taskData.priority,
+        startDate: new Date(taskData.startDate),
+        endDate: new Date(taskData.endDate),
+        status: "pending"
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Create task error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+
+  updateTask: async (id, taskData) => {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/${id}`, {
+        title: taskData.title,
+        description: taskData.description,
+        category: taskData.category,
+        priority: taskData.priority,
+        startDate: new Date(taskData.startDate),
+        endDate: new Date(taskData.endDate)
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Update task error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+
+  deleteTask: async (id) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/${id}`);
+    } catch (error) {
+      console.error('Delete task error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+
+  markComplete: async (id) => {
+    try {
+      await axios.patch(`${API_BASE_URL}/${id}/complete`);
+    } catch (error) {
+      console.error('Complete task error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+
+  markUncomplete: async (id) => {
+    try {
+      await axios.patch(`${API_BASE_URL}/${id}/uncomplete`);
+    } catch (error) {
+      console.error('Uncomplete task error:', error.response?.data || error.message);
+      throw error;
+    }
+  }
+};
 
 const TodoList = () => {
   const [tasks, setTasks] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
   const [currentCategory, setCurrentCategory] = useState('all');
   const [currentSort, setCurrentSort] = useState('date');
   const [currentTask, setCurrentTask] = useState(null);
@@ -27,32 +103,43 @@ const TodoList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPriorities, setSelectedPriorities] = useState([]);
   const [showLateOnly, setShowLateOnly] = useState(false);
-  const [showCompletedOnly, setShowCompletedOnly] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Load saved tasks from localStorage
+  // Load tasks from API
+  const loadTasks = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const filters = {
+        category: currentCategory !== 'all' ? currentCategory : undefined,
+        priority: selectedPriorities.length > 0 ? selectedPriorities.join(',') : undefined,
+        search: searchTerm || undefined,
+        status: showLateOnly ? 'late' : undefined
+      };
+      
+      const fetchedTasks = await todoApi.getAllTasks(filters);
+      setTasks(fetchedTasks || []);
+    } catch (err) {
+      setError('Failed to load tasks');
+      console.error('Error loading tasks:', err);
+      setTasks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial load
   useEffect(() => {
-    const savedTasks = localStorage.getItem('minecraftTasks');
-    const savedCompletedTasks = localStorage.getItem('minecraftCompletedTasks');
-    if (savedTasks) setTasks(JSON.parse(savedTasks));
-    if (savedCompletedTasks) setCompletedTasks(JSON.parse(savedCompletedTasks));
+    loadTasks();
   }, []);
 
-  // Storage
-  const saveTasks = (newTasks) => {
-    setTasks(newTasks);
-    localStorage.setItem('minecraftTasks', JSON.stringify(newTasks));
-  };
-
-  const saveCompletedTasks = (newCompletedTasks) => {
-    setCompletedTasks(newCompletedTasks);
-    localStorage.setItem('minecraftCompletedTasks', JSON.stringify(newCompletedTasks));
-  };
-
-  // Task Status Functions
-  const getLateTasks = () => {
-    const now = new Date();
-    return tasks.filter(task => new Date(task.endDate) < now);
-  };
+  // Reload when filters change
+  useEffect(() => {
+    if (!loading) {
+      loadTasks();
+    }
+  }, [currentCategory, selectedPriorities, searchTerm, showLateOnly]);
 
   const togglePriority = (priority) => {
     setSelectedPriorities(prev => 
@@ -65,9 +152,11 @@ const TodoList = () => {
   // Filter Functions
   const filterTasksBySearch = (taskList) => {
     if (!searchTerm) return taskList;
+    const searchLower = searchTerm.toLowerCase();
     return taskList.filter(task => 
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.category.toLowerCase().includes(searchTerm.toLowerCase())
+      task.title.toLowerCase().includes(searchLower) ||
+      task.description.toLowerCase().includes(searchLower) ||
+      task.category.toLowerCase().includes(searchLower)
     );
   };
 
@@ -84,93 +173,107 @@ const TodoList = () => {
   // Sorting Tasks
   const sortTasks = (taskList) => {
     return [...taskList].sort((a, b) => {
-      let primarySort = 0;
       switch (currentSort) {
         case 'date':
-          primarySort = new Date(a.endDate) - new Date(b.endDate);
-          break;
+          return new Date(a.endDate) - new Date(b.endDate);
         case 'priority':
           const priorityOrder = { high: 0, medium: 1, low: 2 };
-          primarySort = priorityOrder[a.priority] - priorityOrder[b.priority];
-          break;
+          const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
+          return priorityDiff !== 0 ? priorityDiff : new Date(a.endDate) - new Date(b.endDate);
         case 'category':
-          primarySort = a.category.localeCompare(b.category);
-          break;
+          const categoryDiff = a.category.localeCompare(b.category);
+          return categoryDiff !== 0 ? categoryDiff : new Date(a.endDate) - new Date(b.endDate);
         default:
-          return 0;
+          return new Date(a.endDate) - new Date(b.endDate);
       }
-      return primarySort === 0 ? new Date(a.endDate) - new Date(b.endDate) : primarySort;
     });
   };
 
   // Apply all filters and sorting
   const getFilteredAndSortedTasks = (taskList) => {
-    let filtered = taskList;
-    filtered = filterTasksBySearch(filtered);
-    filtered = filterTasksByCategory(filtered);
-    filtered = filterTasksByPriority(filtered);
+    let filtered = [...taskList];
+    
+    if (searchTerm) {
+      filtered = filterTasksBySearch(filtered);
+    }
+    
+    if (currentCategory !== 'all') {
+      filtered = filterTasksByCategory(filtered);
+    }
+    
+    if (selectedPriorities.length > 0) {
+      filtered = filterTasksByPriority(filtered);
+    }
+    
     return sortTasks(filtered);
   };
 
-  // Get filtered and sorted tasks for each status
-  const filteredActiveTasks = getFilteredAndSortedTasks(tasks);
-  const filteredLateTasks = getFilteredAndSortedTasks(getLateTasks());
-  const filteredCompletedTasks = getFilteredAndSortedTasks(completedTasks);
-
   // Task Management Functions
-  const addTask = (taskData) => {
-    const newTask = {
-      id: editingTask ? editingTask.id : Date.now().toString(),
-      ...taskData,
-      pinned: editingTask ? editingTask.pinned : false
-    };
-
-    if (showCompletedOnly) {
-      const newCompletedTasks = completedTasks.map(task => 
-        task.id === editingTask.id ? newTask : task
-      );
-      saveCompletedTasks(newCompletedTasks);
-    } else {
-      const newTasks = editingTask
-        ? tasks.map(task => task.id === editingTask.id ? newTask : task)
-        : [...tasks, newTask];
-      saveTasks(newTasks);
+  const addTask = async (taskData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      if (editingTask) {
+        await todoApi.updateTask(editingTask.id, taskData);
+      } else {
+        await todoApi.createTask(taskData);
+      }
+      await loadTasks();
+      setShowModal(false);
+      setEditingTask(null);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to save task');
+      console.error('Error saving task:', err);
+    } finally {
+      setLoading(false);
     }
-
-    setShowModal(false);
-    setEditingTask(null);
   };
 
-  const deleteTask = (taskId) => {
-    if (showCompletedOnly) {
-      const newCompletedTasks = completedTasks.filter(task => task.id !== taskId);
-      saveCompletedTasks(newCompletedTasks);
-    } else {
-      const newTasks = tasks.filter(task => task.id !== taskId);
-      saveTasks(newTasks);
+  const deleteTask = async (taskId) => {
+    try {
+      setLoading(true);
+      setError(null);
+      await todoApi.deleteTask(taskId);
+      await loadTasks();
+      setCurrentTask(null);
+      setShowDeleteConfirmation(false);
+      setTaskToDelete(null);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to delete task');
+      console.error('Error deleting task:', err);
+    } finally {
+      setLoading(false);
     }
-    setCurrentTask(null);
-    setShowDeleteConfirmation(false);
-    setTaskToDelete(null);
   };
 
-  const completeTask = (task) => {
-    const taskWithCompletionDate = {
-      ...task,
-      completedDate: new Date().toISOString()
-    };
-    saveCompletedTasks([...completedTasks, taskWithCompletionDate]);
-    deleteTask(task.id);
+  const completeTask = async (task) => {
+    try {
+      setLoading(true);
+      setError(null);
+      await todoApi.markComplete(task.id);
+      await loadTasks();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to complete task');
+      console.error('Error completing task:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const uncompleteTask = (task) => {
-    const { completedDate, ...taskWithoutCompletionDate } = task;
-    saveTasks([...tasks, taskWithoutCompletionDate]);
-    saveCompletedTasks(completedTasks.filter(t => t.id !== task.id));
-    setCurrentTask(null);
+  const uncompleteTask = async (task) => {
+    try {
+      setLoading(true);
+      setError(null);
+      await todoApi.markUncomplete(task.id);
+      await loadTasks();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to uncomplete task');
+      console.error('Error uncompleting task:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Event Handlers
   const handleEditTask = (task) => {
     setEditingTask(task);
     setShowModal(true);
@@ -181,17 +284,16 @@ const TodoList = () => {
     setShowDeleteConfirmation(true);
   };
 
-  // Render Functions
-  const renderTaskItem = (task, isCompleted = false) => (
+  const renderTaskItem = (task) => (
     <div
       key={task.id}
-      className={`todo-task-item ${isCompleted ? 'completed' : ''} ${currentTask?.id === task.id ? 'active' : ''} ${new Date(task.endDate) < new Date() ? 'late' : ''}`}
+      className={`todo-task-item ${task.status === 'complete' ? 'completed' : ''} ${currentTask?.id === task.id ? 'active' : ''} ${task.status === 'late' ? 'late' : ''}`}
       onClick={() => setCurrentTask(task)}
     >
       <h3>{task.title}</h3>
       <p>{task.category} - {task.priority} priority</p>
       <small>
-        {isCompleted 
+        {task.status === 'complete' 
           ? `Completed: ${new Date(task.completedDate).toLocaleDateString()}`
           : `End: ${new Date(task.endDate).toLocaleDateString()}`
         }
@@ -243,39 +345,12 @@ const TodoList = () => {
             <div className="todo-status-filters">
               <button
                 className={`todo-late-btn ${showLateOnly ? 'active' : ''}`}
-                onClick={() => {
-                  setShowLateOnly(!showLateOnly);
-                  setShowCompletedOnly(false);
-                }}
+                onClick={() => setShowLateOnly(!showLateOnly)}
               >
                 <span className="todo-late-count">
-                  {searchTerm ? 
-                    getLateTasks().filter(task => 
-                      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                      task.category.toLowerCase().includes(searchTerm.toLowerCase())
-                    ).length : 
-                    getLateTasks().length
-                  }
+                  {tasks.filter(task => task.status === 'late').length}
                 </span>
                 <span className="todo-late-label">Late Tasks</span>
-              </button>
-              <button
-                className={`todo-completed-btn ${showCompletedOnly ? 'active' : ''}`}
-                onClick={() => {
-                  setShowCompletedOnly(!showCompletedOnly);
-                  setShowLateOnly(false);
-                }}
-              >
-                <span className="todo-completed-count">
-                  {searchTerm ? 
-                    completedTasks.filter(task => 
-                      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                      task.category.toLowerCase().includes(searchTerm.toLowerCase())
-                    ).length : 
-                    completedTasks.length
-                  }
-                </span>
-                <span className="todo-completed-label">Completed Tasks</span>
               </button>
             </div>
           </div>
@@ -301,12 +376,18 @@ const TodoList = () => {
               </div>
             </div>
 
+            {/* Error Message */}
+            {error && (
+              <div className="todo-error-message">
+                {error}
+              </div>
+            )}
+
             {/* Tasks Section */}
             <div className="todo-tasks-section">
               <div className="todo-tasks-header">
                 <h2>
                   {showLateOnly ? 'Late Tasks' : 
-                   showCompletedOnly ? 'Completed Tasks' : 
                    searchTerm ? 'Search Results' : 'Tasks'}
                 </h2>
                 <div className="todo-task-filters">
@@ -323,35 +404,25 @@ const TodoList = () => {
 
               {/* Task List */}
               <div className="todo-tasks-list">
-                {showCompletedOnly ? (
-                  filteredCompletedTasks.length === 0 ? (
-                    <p className="todo-no-tasks">No completed tasks</p>
-                  ) : (
-                    filteredCompletedTasks.map(task => renderTaskItem(task, true))
-                  )
-                ) : showLateOnly ? (
-                  filteredLateTasks.length === 0 ? (
-                    <p className="todo-no-tasks">No late tasks</p>
-                  ) : (
-                    filteredLateTasks.map(task => renderTaskItem(task))
-                  )
-                ) : searchTerm ? (
-                  <>
-                    {filteredActiveTasks.length === 0 && filteredCompletedTasks.length === 0 ? (
-                      <p className="todo-no-tasks">No tasks found</p>
-                    ) : (
-                      <>
-                        {filteredActiveTasks.map(task => renderTaskItem(task))}
-                        {filteredCompletedTasks.map(task => renderTaskItem(task, true))}
-                      </>
-                    )}
-                  </>
+                {loading ? (
+                  <div className="todo-loading-container">
+                    <p className="todo-loading">Loading...</p>
+                  </div>
+                ) : error ? (
+                  <div className="todo-error-container">
+                    <p className="todo-error">{error}</p>
+                  </div>
+                ) : getFilteredAndSortedTasks(tasks).length === 0 ? (
+                  <div className="todo-empty-container">
+                    <p className="todo-no-tasks">
+                      {searchTerm ? 'No tasks match your search' :
+                       selectedPriorities.length > 0 ? 'No tasks match the selected priorities' :
+                       currentCategory !== 'all' ? 'No tasks in this category' :
+                       'No tasks found'}
+                    </p>
+                  </div>
                 ) : (
-                  filteredActiveTasks.length === 0 ? (
-                    <p className="todo-no-tasks">No tasks found</p>
-                  ) : (
-                    filteredActiveTasks.map(task => renderTaskItem(task))
-                  )
+                  getFilteredAndSortedTasks(tasks).map(task => renderTaskItem(task))
                 )}
               </div>
             </div>
@@ -361,14 +432,14 @@ const TodoList = () => {
           <section className="todo-details">
             <h2>Task Details</h2>
             <div className="todo-details-content">
-              {currentTask && (
+              {currentTask ? (
                 <div className="todo-task-info">
                   <div className="todo-task-title">{currentTask.title}</div>
                   <div className="todo-task-category">{currentTask.category}</div>
                   <div className="todo-task-dates">
                     <div className="todo-start-date">Start: {new Date(currentTask.startDate).toLocaleDateString()}</div>
                     <div className="todo-end-date">End: {new Date(currentTask.endDate).toLocaleDateString()}</div>
-                    {currentTask.completedDate && (
+                    {currentTask.status === 'complete' && (
                       <div className="todo-completed-date">
                         Completed: {new Date(currentTask.completedDate).toLocaleDateString()}
                       </div>
@@ -379,15 +450,19 @@ const TodoList = () => {
                   </div>
                   <div className="todo-task-actions">
                     <button className="todo-edit-btn" onClick={() => handleEditTask(currentTask)}>Edit</button>
-                    {!showCompletedOnly && !currentTask.completedDate && (
+                    {currentTask.status !== 'complete' && (
                       <button className="todo-complete-btn" onClick={() => completeTask(currentTask)}>Complete</button>
                     )}
-                    {currentTask.completedDate && (
+                    {currentTask.status === 'complete' && (
                       <button className="todo-uncomplete-btn" onClick={() => uncompleteTask(currentTask)}>Uncomplete</button>
                     )}
                     <button className="todo-delete-btn" onClick={() => handleDeleteClick(currentTask)}>Delete</button>
                     <button className="todo-back-btn" onClick={() => setCurrentTask(null)}>Back</button>
                   </div>
+                </div>
+              ) : (
+                <div className="todo-no-task-selected">
+                  <p>Select a task to view details</p>
                 </div>
               )}
             </div>
