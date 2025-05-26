@@ -46,7 +46,7 @@ const Navbar = () => {
                 <div className="navbar-menu-right">
                     <div className="nav-profile-container">
                         {user ? (
-                            <div className="navbar-profile" onClick={handleProfile}>
+                            <div className="navbar-profile navbar-profile-logged-in" onClick={handleProfile}>
                                 <img 
                                     src={user.profile_picture || "Image/icon-steve-profile.webp"} 
                                     alt="Profile" 
