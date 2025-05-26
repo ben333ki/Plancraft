@@ -133,6 +133,10 @@ h1 {
     text-align: left;
 }
 
+.login-password-input-group {
+    position: relative;
+}
+
 label {
     display: block;
     margin-bottom: 4px;
@@ -149,6 +153,7 @@ input {
     font-size: 0.85em;
     transition: all 0.3s ease;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding-right: 40px;
 }
 
 input:focus {
@@ -156,6 +161,26 @@ input:focus {
     border-bottom: 3px solid #532911;
     background: #fff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.login-password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 70%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-password-toggle img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
 
 /* Remember Me Switch */

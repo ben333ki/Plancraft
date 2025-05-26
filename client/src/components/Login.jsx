@@ -9,6 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -39,6 +40,10 @@ const Login = () => {
     } catch (error) {
       setError('Error logging in: ' + error.message);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -73,10 +78,10 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div className="login-input-group">
+              <div className="login-input-group login-password-input-group">
                 <label htmlFor="password">Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   name="password"
                   placeholder="Password"
@@ -85,6 +90,12 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <button type="button" className="login-password-toggle" onClick={togglePasswordVisibility}>
+                  <img 
+                      src={showPassword ? 'Image/icon-open eye.png' : 'Image/icon-close eye.png'}
+                      alt={showPassword ? 'Hide password' : 'Show password'}
+                  />
+                </button>
               </div>
 
               <div className="login-remember">
