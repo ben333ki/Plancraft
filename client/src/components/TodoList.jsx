@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import '../styles/TodoList.css';
 import Navbar from './Navbar';
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
-const API_BASE_URL = 'http://localhost:3000/todolist/tasks';
+const API_BASE_URL = 'http://localhost:3000/api/todolist/tasks';
 
 const CATEGORIES = [
   { key: 'all', label: 'All Tasks' },
@@ -24,7 +25,11 @@ const todoApi = {
     if (filters.status) params.append('status', filters.status);
     if (filters.search) params.append('search', filters.search);
     
-    const response = await axios.get(`${API_BASE_URL}?${params}`);
+    const response = await axios.get(`${API_BASE_URL}?${params}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
     return response.data.tasks;
   },
 
@@ -37,7 +42,12 @@ const todoApi = {
         priority: taskData.priority,
         startDate: new Date(taskData.startDate),
         endDate: new Date(taskData.endDate),
-        status: "pending"
+        status: "pending",
+        userID: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).user_id : null
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
       return response.data;
     } catch (error) {
@@ -55,6 +65,10 @@ const todoApi = {
         priority: taskData.priority,
         startDate: new Date(taskData.startDate),
         endDate: new Date(taskData.endDate)
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
       return response.data;
     } catch (error) {
@@ -65,7 +79,11 @@ const todoApi = {
 
   deleteTask: async (id) => {
     try {
-      await axios.delete(`${API_BASE_URL}/${id}`);
+      await axios.delete(`${API_BASE_URL}/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
     } catch (error) {
       console.error('Delete task error:', error.response?.data || error.message);
       throw error;
@@ -74,7 +92,11 @@ const todoApi = {
 
   markComplete: async (id) => {
     try {
-      await axios.patch(`${API_BASE_URL}/${id}/complete`);
+      await axios.patch(`${API_BASE_URL}/${id}/complete`, {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
     } catch (error) {
       console.error('Complete task error:', error.response?.data || error.message);
       throw error;
@@ -83,7 +105,11 @@ const todoApi = {
 
   markUncomplete: async (id) => {
     try {
-      await axios.patch(`${API_BASE_URL}/${id}/uncomplete`);
+      await axios.patch(`${API_BASE_URL}/${id}/uncomplete`, {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
     } catch (error) {
       console.error('Uncomplete task error:', error.response?.data || error.message);
       throw error;

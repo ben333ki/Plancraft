@@ -18,7 +18,14 @@ func GetAllTasks(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	filter := bson.M{}
+	// Get user ID from JWT token
+	userIDStr := c.Locals("user_id").(string)
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid user ID"})
+	}
+
+	filter := bson.M{"userID": userID}
 
 	// Optional filters
 	if category := c.Query("category"); category != "" {
@@ -54,7 +61,7 @@ func GetAllTasks(c *fiber.Ctx) error {
 		if task.Status == "pending" && task.EndDate.Before(now) {
 			// Update task status in DB
 			_, err := config.ToDoListCollection.UpdateOne(ctx,
-				bson.M{"_id": task.ToDoListID},
+				bson.M{"_id": task.ToDoListID, "userID": userID},
 				bson.M{"$set": bson.M{"status": "late"}},
 			)
 			if err != nil {
@@ -73,13 +80,21 @@ func CreateTask(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	// Get user ID from JWT token
+	userIDStr := c.Locals("user_id").(string)
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid user ID"})
+	}
+
 	var task models.ToDoList
 	if err := c.BodyParser(&task); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input: " + err.Error()})
 	}
 
-	// Set default values
+	// Set default values and user ID
 	task.ToDoListID = primitive.NewObjectID()
+	task.UserID = userID
 	if task.Status == "" {
 		task.Status = "pending"
 	}
@@ -104,14 +119,21 @@ func UpdateTask(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	// Get user ID from JWT token
+	userIDStr := c.Locals("user_id").(string)
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid user ID"})
+	}
+
 	id, err := primitive.ObjectIDFromHex(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid ID format"})
 	}
 
-	// Check if task exists
+	// Check if task exists and belongs to user
 	var existingTask models.ToDoList
-	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&existingTask)
+	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id, "userID": userID}).Decode(&existingTask)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "Task not found"})
 	}
@@ -142,14 +164,14 @@ func UpdateTask(c *fiber.Ctx) error {
 		updateFields["endDate"] = update.EndDate
 	}
 
-	_, err = config.ToDoListCollection.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": updateFields})
+	_, err = config.ToDoListCollection.UpdateOne(ctx, bson.M{"_id": id, "userID": userID}, bson.M{"$set": updateFields})
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to update task: " + err.Error()})
 	}
 
 	// Get the updated task
 	var updatedTask models.ToDoList
-	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&updatedTask)
+	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id, "userID": userID}).Decode(&updatedTask)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch updated task: " + err.Error()})
 	}
@@ -162,19 +184,26 @@ func DeleteTask(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	// Get user ID from JWT token
+	userIDStr := c.Locals("user_id").(string)
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid user ID"})
+	}
+
 	id, err := primitive.ObjectIDFromHex(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid ID format"})
 	}
 
-	// Check if task exists
+	// Check if task exists and belongs to user
 	var existingTask models.ToDoList
-	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&existingTask)
+	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id, "userID": userID}).Decode(&existingTask)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "Task not found"})
 	}
 
-	_, err = config.ToDoListCollection.DeleteOne(ctx, bson.M{"_id": id})
+	_, err = config.ToDoListCollection.DeleteOne(ctx, bson.M{"_id": id, "userID": userID})
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to delete task: " + err.Error()})
 	}
@@ -187,14 +216,21 @@ func MarkTaskComplete(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	// Get user ID from JWT token
+	userIDStr := c.Locals("user_id").(string)
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid user ID"})
+	}
+
 	id, err := primitive.ObjectIDFromHex(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid ID format"})
 	}
 
-	// Check if task exists
+	// Check if task exists and belongs to user
 	var existingTask models.ToDoList
-	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&existingTask)
+	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id, "userID": userID}).Decode(&existingTask)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "Task not found"})
 	}
@@ -206,14 +242,14 @@ func MarkTaskComplete(c *fiber.Ctx) error {
 		},
 	}
 
-	_, err = config.ToDoListCollection.UpdateOne(ctx, bson.M{"_id": id}, update)
+	_, err = config.ToDoListCollection.UpdateOne(ctx, bson.M{"_id": id, "userID": userID}, update)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to mark task as complete: " + err.Error()})
 	}
 
 	// Get the updated task
 	var updatedTask models.ToDoList
-	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&updatedTask)
+	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id, "userID": userID}).Decode(&updatedTask)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch updated task: " + err.Error()})
 	}
@@ -226,14 +262,21 @@ func MarkTaskUncomplete(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	// Get user ID from JWT token
+	userIDStr := c.Locals("user_id").(string)
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid user ID"})
+	}
+
 	id, err := primitive.ObjectIDFromHex(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid ID format"})
 	}
 
-	// Check if task exists
+	// Check if task exists and belongs to user
 	var existingTask models.ToDoList
-	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&existingTask)
+	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id, "userID": userID}).Decode(&existingTask)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "Task not found"})
 	}
@@ -250,14 +293,14 @@ func MarkTaskUncomplete(c *fiber.Ctx) error {
 		},
 	}
 
-	_, err = config.ToDoListCollection.UpdateOne(ctx, bson.M{"_id": id}, update)
+	_, err = config.ToDoListCollection.UpdateOne(ctx, bson.M{"_id": id, "userID": userID}, update)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to update task status: " + err.Error()})
 	}
 
 	// Get the updated task
 	var updatedTask models.ToDoList
-	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&updatedTask)
+	err = config.ToDoListCollection.FindOne(ctx, bson.M{"_id": id, "userID": userID}).Decode(&updatedTask)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch updated task: " + err.Error()})
 	}
@@ -270,7 +313,14 @@ func GetLateTasks(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cursor, err := config.ToDoListCollection.Find(ctx, bson.M{"status": "late"})
+	// Get user ID from JWT token
+	userIDStr := c.Locals("user_id").(string)
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid user ID"})
+	}
+
+	cursor, err := config.ToDoListCollection.Find(ctx, bson.M{"status": "late", "userID": userID})
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch late tasks"})
 	}

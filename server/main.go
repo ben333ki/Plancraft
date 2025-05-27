@@ -37,7 +37,13 @@ func main() {
 	app.Post("/login", handlers.Login)
 	app.Get("/items", handlers.GetItems)
 
-	todolist := app.Group("/todolist/tasks")
+	// Protected routes
+	protected := app.Group("/api", middleware.AuthMiddleware())
+	protected.Get("/test-auth", handlers.TestAuth)
+	protected.Put("/update-profile", handlers.UpdateProfile)
+
+	// Todo list routes (protected)
+	todolist := protected.Group("/todolist/tasks")
 	todolist.Get("/", handlers.GetAllTasks)
 	todolist.Post("/", handlers.CreateTask)
 	todolist.Put("/:id", handlers.UpdateTask)
@@ -45,12 +51,6 @@ func main() {
 	todolist.Patch("/:id/complete", handlers.MarkTaskComplete)
 	todolist.Patch("/:id/uncomplete", handlers.MarkTaskUncomplete)
 	todolist.Get("/late", handlers.GetLateTasks)
-
-	
-	// Protected routes
-	protected := app.Group("/api", middleware.AuthMiddleware())
-	protected.Get("/test-auth", handlers.TestAuth)
-	protected.Put("/update-profile", handlers.UpdateProfile)
 
 	port := os.Getenv("PORT")
 	if port == "" {
