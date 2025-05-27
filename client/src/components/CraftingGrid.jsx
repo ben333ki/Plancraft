@@ -18,9 +18,12 @@ const CraftingGrid = ({ title, gridSlots, resultSlot }) => {
       <div className="craft-arrow">→</div>
       <div className="craft-result-slot">
         {resultSlot && (
-          <>
+          <div className="result-slot-container">
             <img src={resultSlot.image} alt={resultSlot.name} />
-          </>
+            {resultSlot.amount > 1 && (
+              <div className="result-amount">{resultSlot.amount}</div>
+            )}
+          </div>
         )}
       </div>
     </div>

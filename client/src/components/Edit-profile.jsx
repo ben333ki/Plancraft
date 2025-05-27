@@ -16,15 +16,37 @@ const EditProfile = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showAllPasswords, setShowAllPasswords] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const imageInputRef = useRef(null);
 
-    const handleImageUpload = (e) => {
+    const handleImageUpload = async (e) => {
         if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setProfileImage(e.target.result);
-            };
-            reader.readAsDataURL(e.target.files[0]);
+            try {
+                setIsUploading(true);
+                setError('');
+
+                const formData = new FormData();
+                formData.append('image', e.target.files[0]);
+
+                const response = await fetch('http://localhost:3000/api/upload-image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload image');
+                }
+
+                const data = await response.json();
+                setProfileImage(data.imageUrl);
+            } catch (error) {
+                setError('Error uploading image: ' + error.message);
+            } finally {
+                setIsUploading(false);
+            }
         }
     };
 
@@ -114,8 +136,14 @@ const EditProfile = () => {
                                         ref={imageInputRef}
                                         style={{ display: 'none' }}
                                         onChange={handleImageUpload}
+                                        disabled={isUploading}
                                     />
                                 </div>
+                                {isUploading && (
+                                    <div className="edit-profile-uploading">
+                                        Uploading...
+                                    </div>
+                                )}
                             </div>
                         </div>
 

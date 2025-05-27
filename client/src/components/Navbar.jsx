@@ -42,6 +42,18 @@ const Navbar = () => {
                         <img src="Image/icon-calculator.png" alt="Calculator" />
                         <span>Calculator</span>
                     </Link>
+                    <Link to="/createitem" className="navbar-menu-item">
+                        <img src="https://res.cloudinary.com/disbsxrab/image/upload/v1748358217/Plancraft/kr6ev5bchympt17abuhm.png" alt="Calculator" />
+                        <span>Add Item</span>
+                    </Link>
+                    <Link to="/createrecipe" className="navbar-menu-item">
+                        <img src="image/Iron_Pickaxe.webp" alt="Calculator" />
+                        <span>Add Recipe</span>
+                    </Link>
+                    <Link to="/deleterecipe" className="navbar-menu-item">
+                        <img src="image/Stick.webp" alt="Calculator" />
+                        <span>Delete Recipe</span>
+                    </Link>
                 </div>
                 <div className="navbar-menu-right">
                     <div className="nav-profile-container">

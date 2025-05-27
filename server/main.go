@@ -41,6 +41,10 @@ func main() {
 	protected := app.Group("/api", middleware.AuthMiddleware())
 	protected.Get("/test-auth", handlers.TestAuth)
 	protected.Put("/update-profile", handlers.UpdateProfile)
+	protected.Post("/upload-image", handlers.UploadToCloudinary)
+	protected.Post("/create-item", handlers.CreateItem)
+	protected.Post("/create-recipe", handlers.CreateRecipe)
+	protected.Delete("/delete-recipe/:id", handlers.DeleteRecipe)
 
 	// Todo list routes (protected)
 	todolist := protected.Group("/todolist/tasks")
