@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Leaves from './Leaves';
 import Navbar from './Navbar';
-import CraftingGrid from './CraftingGrid';
 import ItemCategories from './ItemCategories';
 import ItemsGrid from './ItemsGrid';
 import ItemDetails from './ItemDetails';
 import Tooltip from './Tooltip';
 import '../styles/Craft.css';
+import CraftingRecipeTree from './CraftingRecipeTree';
 
 const Craft = () => {
     const [activeCategory, setActiveCategory] = useState('Tools');
@@ -107,11 +107,9 @@ const Craft = () => {
                         <div className="craft-recipe-display">
                             <h1>Crafting</h1>
                             <div className="craft-crafting-container">
-                                <CraftingGrid 
-                                    title={recipe.title} 
-                                    gridSlots={recipe.gridSlots} 
-                                    resultSlot={recipe.resultSlot} 
-                                />
+                            {selectedItem && (
+                                <CraftingRecipeTree rootItemID={selectedItem.ItemID} />
+                            )}
                             </div>
                         </div>
 
