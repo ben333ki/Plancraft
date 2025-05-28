@@ -30,7 +30,7 @@ const Navbar = () => {
                         <img src="Image/icon-craft.png" alt="Craft" />
                         <span>Craft</span>
                     </Link>
-                    <Link to="/" className="navbar-menu-item">
+                    <Link to="/farm" className="navbar-menu-item">
                         <img src="Image/Wheat.webp" alt="Farm" />
                         <span>Farm</span>
                     </Link>
