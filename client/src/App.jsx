@@ -12,6 +12,7 @@ import TodoList from './components/TodoList';
 import CreateItem from './components/CreateItem'
 import CreateRecipe from './components/CreateRecipe';
 import DeleteRecipe from './components/DeleteRecipe';
+import Farm from './components/Farm';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path='/createitem' element={<CreateItem/>} />
           <Route path='/createrecipe' element={<CreateRecipe/>} />
           <Route path='/deleterecipe' element={<DeleteRecipe/>} />
+          <Route path="/farm" element={<Farm />} />
 
           {/* Protected Routes */}
           <Route path="/profile" element={
