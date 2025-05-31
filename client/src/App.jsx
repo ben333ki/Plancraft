@@ -13,6 +13,7 @@ import CreateItem from './components/CreateItem'
 import CreateRecipe from './components/CreateRecipe';
 import DeleteRecipe from './components/DeleteRecipe';
 import Farm from './components/Farm';
+import Calculator from './components/Calculator';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path='/createrecipe' element={<CreateRecipe/>} />
           <Route path='/deleterecipe' element={<DeleteRecipe/>} />
           <Route path="/farm" element={<Farm />} />
+          <Route path='/calculator' element={<Calculator />} />
 
           {/* Protected Routes */}
           <Route path="/profile" element={

@@ -38,7 +38,7 @@ const Navbar = () => {
                         <img src="Image/icon-to do list.png" alt="To do list" />
                         <span>To do list</span>
                     </Link>
-                    <Link to="/" className="navbar-menu-item">
+                    <Link to="/calculator" className="navbar-menu-item">
                         <img src="Image/icon-calculator.png" alt="Calculator" />
                         <span>Calculator</span>
                     </Link>

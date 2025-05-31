@@ -37,6 +37,7 @@ func main() {
 	app.Post("/login", handlers.Login)
 	app.Get("/items", handlers.GetItems)
 	app.Get("/items/:itemID/recipe-tree", handlers.GetRecipeTree)
+	app.Post("/items/calculate-materials", handlers.CalculateRequiredMaterials)
 
 	// Protected routes
 	protected := app.Group("/api", middleware.AuthMiddleware())
