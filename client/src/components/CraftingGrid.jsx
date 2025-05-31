@@ -3,7 +3,6 @@ import React from 'react';
 const CraftingGrid = ({ title, gridSlots, resultSlot }) => {
   return (
     <div className="craft-crafting-grid">
-      <div className="craft-grid-title">{title}</div>
       <div className="craft-grid-container">
         {gridSlots.map((slot, index) => (
           <div key={index} className="craft-grid-slot">

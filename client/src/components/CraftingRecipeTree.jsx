@@ -12,7 +12,7 @@ const findRecipeByItemID = (items, id) => {
 const buildGridSlots = (recipe, items) => {
   const slots = Array(9).fill(null);
   recipe.CraftingGrid.forEach(({ Position, ItemInGrid }) => {
-    if (ItemInGrid !== '000000000000000000000000') {
+    if (ItemInGrid && ItemInGrid !== '000000000000000000000000') {
       const matched = findItemByID(items, ItemInGrid);
       if (matched) {
         slots[Position - 1] = {
@@ -29,7 +29,7 @@ const buildGridSlots = (recipe, items) => {
 const CraftingRecipeTree = ({ rootItemID }) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
-    const rendered = new Set(); // ✅ Track already-rendered itemIDs
+    const [recipeChain, setRecipeChain] = useState([]);
   
     useEffect(() => {
       fetch(`http://localhost:3000/items/${rootItemID}/recipe-tree`)
@@ -37,42 +37,72 @@ const CraftingRecipeTree = ({ rootItemID }) => {
         .then(data => {
           setItems(data.items);
           setLoading(false);
+          buildRecipeChain(rootItemID, data.items);
         });
     }, [rootItemID]);
   
+    const buildRecipeChain = (currentItemID, allItems) => {
+        const chain = [];
+        let itemToProcess = findRecipeByItemID(allItems, currentItemID);
+        
+         if (itemToProcess) {
+             chain.push(itemToProcess);
+         }
+
+        let ingredientsToProcess = itemToProcess?.recipe?.CraftingGrid
+            .filter(slot => slot.ItemInGrid && slot.ItemInGrid !== '000000000000000000000000')
+            .map(slot => slot.ItemInGrid) || [];
+
+        const processedItemIDs = new Set([currentItemID]);
+
+        while (ingredientsToProcess.length > 0) {
+            const nextIngredientsToProcess = [];
+            ingredientsToProcess.forEach(ingredientID => {
+                if (!processedItemIDs.has(ingredientID)) {
+                    processedItemIDs.add(ingredientID);
+                    const ingredientRecipe = findRecipeByItemID(allItems, ingredientID);
+                    if (ingredientRecipe) {
+                        chain.push(ingredientRecipe);
+                        
+                        ingredientRecipe.recipe.CraftingGrid
+                            .filter(slot => slot.ItemInGrid && slot.ItemInGrid !== '000000000000000000000000')
+                            .forEach(slot => nextIngredientsToProcess.push(slot.ItemInGrid));
+                    }
+                }
+            });
+            ingredientsToProcess = nextIngredientsToProcess;
+        }
+        setRecipeChain(chain.reverse());
+    };
+  
     if (loading) return <p>Loading recipe...</p>;
   
-    const renderTree = (itemID) => {
-      if (rendered.has(itemID)) return null; // ✅ Skip duplicate render
-      rendered.add(itemID);
+    if (recipeChain.length === 0) return <p>No crafting recipe found for this item.</p>;
   
-      const recipeEntry = findRecipeByItemID(items, itemID);
-      if (!recipeEntry) return null;
+    const containerClassName = `craft-recipe-chain-container ${recipeChain.length > 3 ? 'craft-chain-small' : ''}`;
   
+    return (
+        <div className={containerClassName}>
+            {recipeChain.map((recipeEntry, index) => {
       const gridSlots = buildGridSlots(recipeEntry.recipe, items);
       const resultSlot = {
         image: recipeEntry.item.ItemImage,
         name: recipeEntry.item.ItemName,
         amount: recipeEntry.recipe.RecipeAmount,
       };
-  
+
+
       return (
-        <div className="mb-6">
-          <CraftingGrid title={resultSlot.name} gridSlots={gridSlots} resultSlot={resultSlot} />
-          <div className="ml-8">
-            {gridSlots.map((slot, idx) => {
-              if (!slot) return null;
-              const hasSubRecipe = findRecipeByItemID(items, slot.itemID);
-              return hasSubRecipe ? (
-                <div key={idx}>{renderTree(slot.itemID)}</div>
-              ) : null;
+                    <CraftingGrid
+                        key={index}
+                        title={recipeEntry.item.ItemName}
+                        gridSlots={gridSlots}
+                        resultSlot={resultSlot}
+                    />
+                );
             })}
-          </div>
         </div>
       );
-    };
-  
-    return <div>{renderTree(rootItemID)}</div>;
   };
   
 

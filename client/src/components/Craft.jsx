@@ -14,6 +14,8 @@ const Craft = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredItems, setFilteredItems] = useState([]);
     const [recipe, setRecipe] = useState({
         title: 'Select an item',
         gridSlots: Array(9).fill(null),
@@ -24,6 +26,26 @@ const Craft = () => {
         fetchItems();
     }, []);
 
+    useEffect(() => {
+        if (searchQuery) {
+            // Filter items based on search query
+            const filtered = items.filter(item => 
+                item.item.ItemName.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setFilteredItems(filtered);
+
+            // If we have matches, set the category to the first matching item's category
+            if (filtered.length > 0) {
+                setActiveCategory(filtered[0].item.ItemCategory);
+            }
+        } else {
+            // If no search query, show all items from current category
+            setFilteredItems(items.filter(item => 
+                item.item.ItemCategory === activeCategory
+            ));
+        }
+    }, [searchQuery, items, activeCategory]);
+
     const fetchItems = async () => {
         try {
             const response = await fetch('http://localhost:3000/items');
@@ -32,6 +54,9 @@ const Craft = () => {
             }
             const data = await response.json();
             setItems(data.items);
+            setFilteredItems(data.items.filter(item => 
+                item.item.ItemCategory === activeCategory
+            ));
             setLoading(false);
         } catch (err) {
             setError(err.message);
@@ -79,6 +104,16 @@ const Craft = () => {
         }
     };
 
+    const handleSearch = (e) => {
+        const query = e.target.value.toLowerCase();
+        setSearchQuery(query);
+    };
+
+    const handleCategoryChange = (category) => {
+        setActiveCategory(category);
+        setSearchQuery('');
+    };
+
     if (loading) {
         return (
             <>
@@ -113,17 +148,38 @@ const Craft = () => {
                             </div>
                         </div>
 
+                        <div className="craft-search-section">
+                            <div className="craft-search-wrapper">
+                                <input
+                                    type="text"
+                                    placeholder="Search items"
+                                    value={searchQuery}
+                                    onChange={handleSearch}
+                                    className="craft-search-input"
+                                />
+                            </div>
+                        </div>
+
                         <div className="craft-items-section">
                             <ItemCategories 
                                 activeCategory={activeCategory} 
-                                setActiveCategory={setActiveCategory} 
+                                setActiveCategory={handleCategoryChange} 
                             />
                             
-                            <ItemsGrid 
-                                activeCategory={activeCategory} 
-                                onItemSelect={handleItemSelect}
-                                items={items}
-                            />
+                            <div className="craft-items-grid">
+                                {searchQuery && filteredItems.length === 0 ? (
+                                    <div className="craft-no-results">
+                                        ไม่พบไอเทมที่ค้นหา
+                                    </div>
+                                ) : (
+                                    <ItemsGrid 
+                                        activeCategory={activeCategory} 
+                                        onItemSelect={handleItemSelect}
+                                        items={filteredItems}
+                                        searchQuery={searchQuery}
+                                    />
+                                )}
+                            </div>
 
                             <ItemDetails selectedItem={selectedItem} />
                         </div>
