@@ -38,14 +38,14 @@
     padding: 20px;
 }
 
-.recipes-list {
+.delete-recipe-recipes-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
     margin-bottom: 20px;
 }
 
-.recipe-item {
+.delete-recipe-recipe-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -55,32 +55,32 @@
     border: 1px solid #dee2e6;
 }
 
-.recipe-info {
+.delete-recipe-recipe-info {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-.recipe-item-image {
+.delete-recipe-recipe-item-image {
     width: 50px;
     height: 50px;
     object-fit: contain;
     border-radius: 4px;
 }
 
-.recipe-details h3 {
+.delete-recipe-recipe-details h3 {
     margin: 0;
     color: #333;
     font-size: 1.1em;
 }
 
-.recipe-details p {
+.delete-recipe-recipe-details p {
     margin: 5px 0 0;
     color: #666;
     font-size: 0.9em;
 }
 
-.delete-button {
+.delete-recipe-delete-button {
     background-color: #dc3545;
     color: white;
     border: none;
@@ -90,11 +90,11 @@
     transition: background-color 0.2s;
 }
 
-.delete-button:hover {
+.delete-recipe-delete-button:hover {
     background-color: #c82333;
 }
 
-.delete-button:disabled {
+.delete-recipe-delete-button:disabled {
     background-color: #e9ecef;
     cursor: not-allowed;
 }
@@ -105,7 +105,7 @@
     margin-top: 20px;
 }
 
-.cancel-button {
+.delete-recipe-cancel-button {
     background-color: #6c757d;
     color: white;
     border: none;
@@ -115,15 +115,15 @@
     transition: background-color 0.2s;
 }
 
-.cancel-button:hover {
+.delete-recipe-cancel-button:hover {
     background-color: #5a6268;
 }
 
-.no-recipes {
+.delete-recipe-no-recipes {
     text-align: center;
     color: #666;
     padding: 20px;
     background-color: #f8f9fa;
     border-radius: 6px;
     border: 1px solid #dee2e6;
-} 
+}

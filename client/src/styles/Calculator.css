@@ -1,0 +1,159 @@
+.calculator-page {
+  min-height: 100vh;
+  padding: 2rem;
+  width: 100vw;
+  position: relative;
+  background: url('/Image/BG-home.png') no-repeat center center fixed;
+  background-size: cover;
+  align-items: center;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.calculator-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem;
+}
+
+.calculator-box {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 3px solid #4a4a4a;
+  padding: 2rem;
+}
+
+.calculator-box h1 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.calculator-error {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.calculator-loading {
+  text-align: center;
+  color: #6b7280;
+  padding: 2rem;
+}
+
+/* Calculator Styles */
+.calculator-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.calculator-item-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.calculator-item-select {
+  flex: 1;
+}
+
+.calculator-amount-input {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.calculator-remove-btn {
+  padding: 0.5rem 1rem;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calculator-remove-btn:hover {
+  background-color: #cc0000;
+}
+
+.calculator-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.calculator-add-btn {
+  padding: 0.5rem 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calculator-add-btn:hover {
+  background-color: #45a049;
+}
+
+.calculator-calculate-btn {
+  padding: 0.5rem 1rem;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calculator-calculate-btn:hover {
+  background-color: #1976D2;
+}
+
+.calculator-calculate-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.calculator-results {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.calculator-materials-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.calculator-material-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.calculator-material-item img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.calculator-material-amount {
+  margin-left: auto;
+  font-weight: bold;
+  color: #2196F3;
+}

@@ -96,25 +96,25 @@ function DeleteRecipe() {
             
             {error && <div className="delete-recipe-error">{error}</div>}
 
-            <div className="recipes-list">
+            <div className="delete-recipe-recipes-list">
               {recipes.length === 0 ? (
-                <div className="no-recipes">No recipes found</div>
+                <div className="delete-recipe-no-recipes">No recipes found</div>
               ) : (
                 recipes.map((recipe) => (
-                  <div key={recipe.RecipeID} className="recipe-item">
-                    <div className="recipe-info">
+                  <div key={recipe.RecipeID} className="delete-recipe-recipe-item">
+                    <div className="delete-recipe-recipe-info">
                       <img 
                         src={recipe.recipe_item.ItemImage} 
                         alt={recipe.recipe_item.ItemName} 
-                        className="recipe-item-image"
+                        className="delete-recipe-recipe-item-image"
                       />
-                      <div className="recipe-details">
+                      <div className="delete-recipe-recipe-details">
                         <h3>{recipe.recipe_item.ItemName}</h3>
                         <p>Amount: {recipe.recipe_amount}</p>
                       </div>
                     </div>
                     <button
-                      className="delete-button"
+                      className="delete-recipe-delete-button"
                       onClick={() => handleDelete(recipe.RecipeID)}
                       disabled={isDeleting}
                     >
@@ -127,7 +127,7 @@ function DeleteRecipe() {
 
             <div className="delete-recipe-actions">
               <button 
-                className="cancel-button"
+                className="delete-recipe-cancel-button"
                 onClick={() => navigate('/craft')}
               >
                 Back to Craft

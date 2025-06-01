@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from './Navbar';
-import '../styles/CreateRecipe.css';
+import '../styles/Calculator.css';
 import Select from 'react-select';
 
 function Calculator() {
@@ -61,9 +61,17 @@ function Calculator() {
     setIsCalculating(true);
 
     try {
+      // Validate for negative amounts
+      const hasNegativeAmount = craftRequests.some(req => parseInt(req.amount) < 0);
+      if (hasNegativeAmount) {
+        setError('Amount cannot be negative.');
+        setIsCalculating(false);
+        return;
+      }
+
       const formattedRequests = craftRequests.map(req => ({
         item_id: req.itemId,
-        amount: req.amount
+        amount: parseInt(req.amount) > 0 ? parseInt(req.amount) : 1
       }));
 
       const response = await fetch("http://localhost:3000/items/calculate-materials", {
@@ -101,10 +109,10 @@ function Calculator() {
     return (
       <>
         <Navbar />
-        <div className="create-recipe-page">
-          <div className="create-recipe-container">
-            <div className="create-recipe-box">
-              <div className="create-recipe-loading">Loading items...</div>
+        <div className="calculator-page">
+          <div className="calculator-container">
+            <div className="calculator-box">
+              <div className="calculator-loading">Loading items...</div>
             </div>
           </div>
         </div>
@@ -115,12 +123,12 @@ function Calculator() {
   return (
     <>
       <Navbar />
-      <div className="create-recipe-page">
-        <div className="create-recipe-container">
-          <div className="create-recipe-box">
+      <div className="calculator-page">
+        <div className="calculator-container">
+          <div className="calculator-box">
             <h1>Material Calculator</h1>
             
-            {error && <div className="create-recipe-error">{error}</div>}
+            {error && <div className="calculator-error">{error}</div>}
 
             <div className="calculator-form">
               {craftRequests.map((request, index) => (
@@ -164,7 +172,7 @@ function Calculator() {
                   onClick={handleAddItem}
                   className="calculator-add-btn"
                 >
-                  Add Item
+                  + Add Item
                 </button>
                 <button
                   type="button"
@@ -179,12 +187,12 @@ function Calculator() {
               {requiredMaterials.length > 0 && (
                 <div className="calculator-results">
                   <h2>Required Materials:</h2>
-                  <div className="materials-list">
+                  <div className="calculator-materials-list">
                     {requiredMaterials.map((material) => (
-                      <div key={material.item_id} className="material-item">
+                      <div key={material.item_id} className="calculator-material-item">
                         <img src={material.item_image} alt={material.item_name} />
                         <span>{material.item_name}</span>
-                        <span className="material-amount">x{material.amount}</span>
+                        <span className="calculator-material-amount">x{material.amount}</span>
                       </div>
                     ))}
                   </div>
