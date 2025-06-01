@@ -13,7 +13,10 @@ import CreateItem from './components/CreateItem'
 import CreateRecipe from './components/CreateRecipe';
 import DeleteRecipe from './components/DeleteRecipe';
 import Farm from './components/Farm';
+import FarmDetail from './components/FarmDetail';
 import Calculator from './components/Calculator';
+import CreateFarm from './components/CreateFarm';
+import DeleteFarm from './components/DeleteFarm';
 
 function App() {
   return (
@@ -29,8 +32,11 @@ function App() {
           <Route path="/todolist" element={<TodoList />} />
           <Route path='/createitem' element={<CreateItem/>} />
           <Route path='/createrecipe' element={<CreateRecipe/>} />
+          <Route path='/createfarm' element={<CreateFarm/>} />
+          <Route path='/deletefarm' element={<DeleteFarm/>} />
           <Route path='/deleterecipe' element={<DeleteRecipe/>} />
           <Route path="/farm" element={<Farm />} />
+          <Route path="/farm/:farmId" element={<FarmDetail />} />
           <Route path='/calculator' element={<Calculator />} />
 
           {/* Protected Routes */}

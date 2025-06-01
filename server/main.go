@@ -38,6 +38,7 @@ func main() {
 	app.Get("/items", handlers.GetItems)
 	app.Get("/items/:itemID/recipe-tree", handlers.GetRecipeTree)
 	app.Post("/items/calculate-materials", handlers.CalculateRequiredMaterials)
+	app.Get("/farms", handlers.GetAllFarms)
 
 	// Protected routes
 	protected := app.Group("/api", middleware.AuthMiddleware())
@@ -47,6 +48,8 @@ func main() {
 	protected.Post("/create-item", handlers.CreateItem)
 	protected.Post("/create-recipe", handlers.CreateRecipe)
 	protected.Delete("/delete-recipe/:id", handlers.DeleteRecipe)
+	protected.Post("/create-farm", handlers.CreateFarm)
+	protected.Delete("/delete-farm/:id", handlers.DeleteFarm)
 
 	// Todo list routes (protected)
 	todolist := protected.Group("/todolist/tasks")

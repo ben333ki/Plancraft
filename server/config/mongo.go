@@ -15,6 +15,7 @@ var UserCollection *mongo.Collection
 var ItemCollection *mongo.Collection
 var RecipeCollection *mongo.Collection
 var ToDoListCollection *mongo.Collection
+var FarmCollection *mongo.Collection // <-- Added this line
 
 func ConnectMongoDB(ctx context.Context) error {
 	uri := os.Getenv("MONGODB_URI")
@@ -34,8 +35,9 @@ func ConnectMongoDB(ctx context.Context) error {
 	ItemCollection = MongoDB.Collection("items")
 	RecipeCollection = MongoDB.Collection("recipes")
 	ToDoListCollection = MongoDB.Collection("todolists")
+	FarmCollection = MongoDB.Collection("farms") // <-- Added this line
 
-	// Create indexes if they don't exist
+	// Create indexes
 	userIndexModel := mongo.IndexModel{
 		Keys: map[string]interface{}{
 			"email": 1,
@@ -65,24 +67,31 @@ func ConnectMongoDB(ctx context.Context) error {
 		Options: options.Index().SetUnique(true),
 	}
 
-	// Create indexes
-	_, err = UserCollection.Indexes().CreateOne(ctx, userIndexModel)
-	if err != nil {
+	farmIndexModel := mongo.IndexModel{
+		Keys: bson.D{
+			{Key: "farm_name", Value: 1},
+		},
+		Options: options.Index().SetUnique(true),
+	}
+
+	// Apply indexes
+	if _, err = UserCollection.Indexes().CreateOne(ctx, userIndexModel); err != nil {
 		return err
 	}
 
-	_, err = ItemCollection.Indexes().CreateOne(ctx, itemIndexModel)
-	if err != nil {
+	if _, err = ItemCollection.Indexes().CreateOne(ctx, itemIndexModel); err != nil {
 		return err
 	}
 
-	_, err = RecipeCollection.Indexes().CreateOne(ctx, recipeIndexModel)
-	if err != nil {
+	if _, err = RecipeCollection.Indexes().CreateOne(ctx, recipeIndexModel); err != nil {
 		return err
 	}
 
-	_, err = ToDoListCollection.Indexes().CreateOne(ctx, todoListIndexModel)
-	if err != nil {
+	if _, err = ToDoListCollection.Indexes().CreateOne(ctx, todoListIndexModel); err != nil {
+		return err
+	}
+
+	if _, err = FarmCollection.Indexes().CreateOne(ctx, farmIndexModel); err != nil {
 		return err
 	}
 
