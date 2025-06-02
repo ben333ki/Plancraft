@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import Leaves from './Leaves';
-import '../styles/createAccount.css';
+import '../styles/CreateAccount.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
