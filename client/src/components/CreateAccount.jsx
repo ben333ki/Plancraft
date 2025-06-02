@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import Leaves from './Leaves';
 import '../styles/CreateAccount.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { API_URL } from '../config/constants';
 
@@ -148,11 +148,11 @@ const CreateAccount = () => {
               </button>
             </form>
 
-            <a href="/login" className="login-link">
+            <Link to="/login" className="login-link">
               Already have an account?
-            </a>
+            </Link>
 
-            <a href="/home" className="login-guest-link">Go to Home</a>
+            <Link to="/home" className="login-guest-link">Go to Home</Link>
           </div>
         </div>
       </div>

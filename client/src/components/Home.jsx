@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Home.css';
 import Navbar from './Navbar';
 
@@ -23,37 +24,37 @@ const Home = () => {
               <div className="home-features-container">
                 <h1>ระบบที่มีอยู่ในเว็บไซต์</h1>
 
-                <a href="/craft" className="home-feature-card">
+                <Link to="/craft" className="home-feature-card">
                   <img src="/Image/icon-craft.png" alt="Craft Icon" />
                   <div className="home-feature-content">
                     <h1>ระบบ Craft</h1>
                     <p>ดูอุปกรณ์ที่ต้องใช้ในการคราฟ จำนวน และที่มาของอุปกรณ์ที่ต้องใช้ในการคราฟของไอเทมนั้นๆ</p>
                   </div>
-                </a>
+                </Link>
 
-                <a href="farm" className="home-feature-card">
+                <Link to="/farm" className="home-feature-card">
                   <img src="/Image/Wheat.webp" alt="Farm Icon" />
                   <div className="home-feature-content">
                     <h1>ระบบ Farm</h1>
                     <p>ดูไอเทมที่จะได้รับจากฟาร์ม ไอเทม/จำนวนที่ใช้สร้างฟาร์ม วิดิโอตัวอย่างการสร้างฟาร์ม</p>
                   </div>
-                </a>
+                </Link>
 
-                <a href="/todolist" className="home-feature-card">
+                <Link to="/todolist" className="home-feature-card">
                   <img src="/Image/icon-to do list.png" alt="To Do List Icon" />
                   <div className="home-feature-content">
                     <h1>To do list</h1>
                     <p>ช่วยจัดการงานที่ต้องทำ สำหรับการเล่นเกม Minecraft</p>
                   </div>
-                </a>
+                </Link>
 
-                <a href="/calculator" className="home-feature-card">
+                <Link to="/calculator" className="home-feature-card">
                   <img src="/Image/icon-calculator.png" alt="Calculator Icon" />
                   <div className="home-feature-content">
                     <h1>คำนวน</h1>
                     <p>คำนวนจำนวนของไอเทมที่ต้องการจะใช้</p>
                   </div>
-                </a>
+                </Link>
               </div>
             </div>
 
