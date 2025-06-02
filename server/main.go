@@ -17,13 +17,21 @@ import (
 )
 
 func main() {
-	app := fiber.New()
-	app.Use(cors.New())
-	fmt.Println("Server is running")
+	// Load .env file if it exists, but don't fail if it doesn't
+	_ = godotenv.Load()
 
-	if err := godotenv.Load(); err != nil {
-		log.Println("Warning: .env file not found, relying on environment variables")
-	}	
+	app := fiber.New(fiber.Config{
+		AppName: "Plancraft API",
+	})
+
+	// Configure CORS
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+	}))
+
+	fmt.Println("Server is running")
 
 	// Connect to MongoDB
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -62,10 +70,15 @@ func main() {
 	todolist.Patch("/:id/uncomplete", handlers.MarkTaskUncomplete)
 	todolist.Get("/late", handlers.GetLateTasks)
 
+	// Get port from environment variable or use default
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
 	}
 
-	log.Fatal(app.Listen(":" + port))
+	// Start server with proper error handling
+	log.Printf("Starting server on port %s", port)
+	if err := app.Listen(":" + port); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
