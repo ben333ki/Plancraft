@@ -17,9 +17,11 @@ import (
 )
 
 func main() {
-	// Load .env file if it exists, but don't fail if it doesn't
-	_ = godotenv.Load()
-
+	
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found — relying on Render environment variables")
+	}
+	
 	app := fiber.New(fiber.Config{
 		AppName: "Plancraft API",
 	})
