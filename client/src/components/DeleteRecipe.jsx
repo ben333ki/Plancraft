@@ -6,6 +6,8 @@ import '../styles/DeleteRecipe.css';
 function DeleteRecipe() {
   const navigate = useNavigate();
   const [recipes, setRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -28,6 +30,7 @@ function DeleteRecipe() {
             recipe_amount: item.recipe.RecipeAmount
           }));
         setRecipes(recipesWithItems);
+        setFilteredRecipes(recipesWithItems);
       } catch (error) {
         console.error('Error fetching recipes:', error);
         setError(error.message);
@@ -38,6 +41,17 @@ function DeleteRecipe() {
 
     fetchRecipes();
   }, []);
+
+  useEffect(() => {
+    const filtered = recipes.filter(recipe => 
+      recipe.recipe_item.ItemName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredRecipes(filtered);
+  }, [searchTerm, recipes]);
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleDelete = async (recipeId) => {
     if (!window.confirm('Are you sure you want to delete this recipe?')) {
@@ -96,11 +110,23 @@ function DeleteRecipe() {
             
             {error && <div className="delete-recipe-error">{error}</div>}
 
+            <div className="delete-recipe-search">
+              <input
+                type="text"
+                placeholder="Search recipes by item name..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="delete-recipe-search-input"
+              />
+            </div>
+
             <div className="delete-recipe-recipes-list">
-              {recipes.length === 0 ? (
-                <div className="delete-recipe-no-recipes">No recipes found</div>
+              {filteredRecipes.length === 0 ? (
+                <div className="delete-recipe-no-recipes">
+                  {searchTerm ? 'No recipes match your search' : 'No recipes found'}
+                </div>
               ) : (
-                recipes.map((recipe) => (
+                filteredRecipes.map((recipe) => (
                   <div key={recipe.RecipeID} className="delete-recipe-recipe-item">
                     <div className="delete-recipe-recipe-info">
                       <img 

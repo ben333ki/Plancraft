@@ -33,7 +33,7 @@ const Login = () => {
 
       if (response.ok) {
         login(data.user, data.token);
-        navigate('/profile');
+        navigate('/');
       } else {
         setError(data.error || 'Login failed');
       }

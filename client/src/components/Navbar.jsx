@@ -6,10 +6,42 @@ import axios from 'axios';
 
 const API_TODO_TASKS_URL = 'http://localhost:3000/api/todolist/tasks';
 
+// Login Alert Modal Component
+const LoginAlertModal = ({ onClose, onLogin }) => {
+  return (
+    <div className="todo-modal" onClick={onClose}>
+      <div className="todo-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="todo-modal-header">
+          <h2>Login Required</h2>
+          <button className="todo-close-modal" onClick={onClose}>&times;</button>
+        </div>
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+          <p>Please login to use this feature.</p>
+          <div className="todo-form-actions" style={{ marginTop: '20px' }}>
+            <button 
+              className="todo-cancel-btn" 
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button 
+              className="todo-save-btn" 
+              onClick={onLogin}
+            >
+              Go to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Navbar = () => {
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
     const [pendingTaskCount, setPendingTaskCount] = useState(0);
+    const [showLoginAlert, setShowLoginAlert] = useState(false);
 
     const handleLogin = () => {
         navigate('/login');
@@ -17,6 +49,13 @@ const Navbar = () => {
 
     const handleProfile = () => {
         navigate('/profile');
+    }
+
+    const handleTodoListClick = (e) => {
+        if (!user) {
+            e.preventDefault();
+            setShowLoginAlert(true);
+        }
     }
 
     useEffect(() => {
@@ -39,7 +78,6 @@ const Navbar = () => {
         };
 
         fetchPendingTasksCount();
-        // Fetch again if user changes
     }, [user]);
 
     return (
@@ -61,7 +99,7 @@ const Navbar = () => {
                         <img src="/Image/Wheat.webp" alt="Farm" />
                         <span>Farm</span>
                     </Link>
-                    <Link to="/todolist" className="navbar-menu-item">
+                    <Link to="/todolist" className="navbar-menu-item" onClick={handleTodoListClick}>
                         <img src="/Image/icon-to do list.png" alt="To do list" />
                         <span>To do list</span>
                         {pendingTaskCount > 0 && (
@@ -125,6 +163,17 @@ const Navbar = () => {
                     </div>
                 </div>
             </nav>
+
+            {/* Login Alert Modal */}
+            {showLoginAlert && (
+                <LoginAlertModal 
+                    onClose={() => setShowLoginAlert(false)}
+                    onLogin={() => {
+                        setShowLoginAlert(false);
+                        navigate('/login');
+                    }}
+                />
+            )}
         </div>
     );
 };

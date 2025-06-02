@@ -120,3 +120,53 @@ func DeleteFarm(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Farm deleted successfully"})
 }
+
+func CalculateFarmMaterials(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var request struct {
+		FarmID primitive.ObjectID `json:"farm_id"`
+		Amount int                `json:"amount"`
+	}
+
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+	}
+
+	// Get farm details
+	var farm models.Farm
+	err := config.FarmCollection.FindOne(ctx, bson.M{"_id": request.FarmID}).Decode(&farm)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Farm not found"})
+	}
+
+	// Calculate required materials
+	requiredMaterials := make(map[primitive.ObjectID]int)
+	for _, item := range farm.ItemsRequired {
+		requiredMaterials[item.ItemID] = item.Amount * request.Amount
+	}
+
+	// Get item details for the required materials
+	var materialsWithDetails []map[string]interface{}
+	for itemID, amount := range requiredMaterials {
+		var item models.Item
+		err := config.ItemCollection.FindOne(ctx, bson.M{"_id": itemID}).Decode(&item)
+		if err != nil {
+			log.Printf("Error finding item: %v", err)
+			continue
+		}
+
+		materialsWithDetails = append(materialsWithDetails, map[string]interface{}{
+			"item_id":    itemID,
+			"item_name":  item.ItemName,
+			"item_image": item.ItemImage,
+			"amount":     amount,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"farm_name": farm.FarmName,
+		"materials": materialsWithDetails,
+	})
+}

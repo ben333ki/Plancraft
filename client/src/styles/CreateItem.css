@@ -2,6 +2,8 @@
   min-height: 100vh;
   background-color: #f5f5f5;
   padding: 2rem 0;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 .create-item-container {

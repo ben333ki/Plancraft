@@ -6,6 +6,8 @@ import '../styles/DeleteRecipe.css';
 function DeleteFarm() {
   const navigate = useNavigate();
   const [farms, setFarms] = useState([]);
+  const [filteredFarms, setFilteredFarms] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -20,6 +22,7 @@ function DeleteFarm() {
         }
         const data = await response.json();
         setFarms(data.farms);
+        setFilteredFarms(data.farms);
       } catch (error) {
         console.error('Error fetching farms:', error);
         setError(error.message);
@@ -30,6 +33,18 @@ function DeleteFarm() {
 
     fetchFarms();
   }, []);
+
+  useEffect(() => {
+    const filtered = farms.filter(farm => 
+      farm.farm_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      farm.farm_category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredFarms(filtered);
+  }, [searchTerm, farms]);
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleDelete = async (farmId) => {
     if (!window.confirm('Are you sure you want to delete this farm?')) {
@@ -88,11 +103,23 @@ function DeleteFarm() {
             
             {error && <div className="delete-recipe-error">{error}</div>}
 
+            <div className="delete-recipe-search">
+              <input
+                type="text"
+                placeholder="Search farms by name or category..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="delete-recipe-search-input"
+              />
+            </div>
+
             <div className="delete-recipe-recipes-list">
-              {farms.length === 0 ? (
-                <div className="delete-recipe-no-recipes">No farms found</div>
+              {filteredFarms.length === 0 ? (
+                <div className="delete-recipe-no-recipes">
+                  {searchTerm ? 'No farms match your search' : 'No farms found'}
+                </div>
               ) : (
-                farms.map((farm) => (
+                filteredFarms.map((farm) => (
                   <div key={farm.farm_id} className="delete-recipe-recipe-item">
                     <div className="delete-recipe-recipe-info">
                       <img 
