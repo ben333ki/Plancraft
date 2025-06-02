@@ -15,17 +15,20 @@ var JWTSecret []byte
 
 // Initialize the secret from environment variables
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+    // Load .env file only if it exists (local development)
+    if _, err := os.Stat(".env"); err == nil {
+        err := godotenv.Load()
+        if err != nil {
+            log.Println("Warning: error loading .env file:", err)
+        }
+    }
 
-	JWT_SECRET_KEY := os.Getenv("JWT_SECRET_KEY")
-	if JWT_SECRET_KEY == "" {
-		log.Fatal("JWT_SECRET_KEY is not set in environment variables")
-	}
+    JWT_SECRET_KEY := os.Getenv("JWT_SECRET_KEY")
+    if JWT_SECRET_KEY == "" {
+        log.Fatal("JWT_SECRET_KEY is not set in environment variables")
+    }
 
-	JWTSecret = []byte(JWT_SECRET_KEY)
+    JWTSecret = []byte(JWT_SECRET_KEY)
 }
 
 // GenerateToken accepts a MongoDB ObjectID as string and a duration
