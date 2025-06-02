@@ -87,9 +87,14 @@
 .craft-recipe-chain-container {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 20px;
-    overflow-x: auto;
     padding: 10px 0;
+    justify-content: center;
+}
+
+.craft-recipe-chain-container:has(.craft-crafting-grid:nth-child(n+4)) {
+    max-width: 100%;
 }
 
 .craft-chain-small .craft-recipe-chain-container {
@@ -108,11 +113,18 @@
     border: 2px solid #8B8B8B;
     position: relative;
     overflow: hidden;
+    flex: 1 1 calc(33.33% - 13.33px);
+    box-sizing: border-box;
+    min-width: 250px;
 }
 
 .craft-chain-small .craft-crafting-grid {
+    display: flex;
+    justify-content: center;
     padding: 10px;
     gap: 10px;
+    flex: 1 1 calc(33.33% - 6.67px);
+    min-width: 150px;
 }
 
 /* Grid Container & Slots */
