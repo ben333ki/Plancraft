@@ -244,123 +244,7 @@ function Calculator() {
       <Navbar />
       <div className="calculator-page">
         <div className="calculator-container">
-          <div className="calculator-box">
-            <h1>Item Material Calculator</h1>
-            
-            {error && <div className="calculator-error">{error}</div>}
-
-            <div className="calculator-form">
-              {craftRequests.map((request, index) => (
-                <div key={index} className="calculator-item-row">
-                  <Select
-                    className="calculator-item-select"
-                    value={getSelectedOption(request.itemId)}
-                    onChange={(selectedOption) => handleItemChange(index, selectedOption)}
-                    options={itemOptions}
-                    formatOptionLabel={({ label, image }) => (
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={image} alt={label} style={{ width: 30, height: 30, marginRight: 10 }} />
-                        {label}
-                      </div>
-                    )}
-                    placeholder="Select an item..."
-                    isSearchable
-                  />
-                  <input
-                    type="number"
-                    min="1"
-                    value={request.amount}
-                    onChange={(e) => handleAmountChange(index, e.target.value)}
-                    className="calculator-amount-input"
-                  />
-                  {craftRequests.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveItem(index)}
-                      className="calculator-remove-btn"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-              ))}
-
-              <div className="calculator-actions">
-                <button
-                  type="button"
-                  onClick={handleAddItem}
-                  className="calculator-add-btn"
-                >
-                  + Add Item
-                </button>
-                <button
-                  type="button"
-                  onClick={calculateMaterials}
-                  className="calculator-calculate-btn"
-                  disabled={isCalculating}
-                >
-                  {isCalculating ? 'Calculating...' : 'Calculate Materials'}
-                </button>
-              </div>
-
-              {itemMaterials.length > 0 && (
-                <div className="calculator-results">
-                  <h2>Required Materials:</h2>
-                  <div className="calculator-materials-list">
-                    {itemMaterials.map((material) => (
-                      <div key={material.item_id} className="calculator-material-item">
-                        <img src={material.item_image} alt={material.item_name} />
-                        <span>{material.item_name}</span>
-                        <span className="calculator-material-amount">x{material.amount}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    marginTop: '2rem',
-                    width: '100%'
-                  }}>
-                    <button
-                      type="button"
-                      onClick={() => createTodoFromMaterials(itemMaterials)}
-                      style={{
-                        padding: '0.75rem 2rem',
-                        backgroundColor: '#9c27b0',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '1.1rem',
-                        fontWeight: '500',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                        transition: 'all 0.3s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.backgroundColor = '#7b1fa2';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 8px rgba(0, 0, 0, 0.15)';
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.backgroundColor = '#9c27b0';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-                      }}
-                    >
-                      <span>📝</span> Create Todo List
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="calculator-container">
-          <div className="calculator-box">
+          <div className="calculator-box farm-calculator">
             <h1>Farm Material Calculator</h1>
             
             {error && <div className="calculator-error">{error}</div>}
@@ -432,40 +316,96 @@ function Calculator() {
                       </div>
                     ))}
                   </div>
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    marginTop: '2rem',
-                    width: '100%'
-                  }}>
+                  <div className="calculator-todo-button">
                     <button
                       type="button"
                       onClick={() => createTodoFromMaterials(farmMaterials)}
-                      style={{
-                        padding: '0.75rem 2rem',
-                        backgroundColor: '#9c27b0',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '1.1rem',
-                        fontWeight: '500',
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                        transition: 'all 0.3s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.backgroundColor = '#7b1fa2';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 8px rgba(0, 0, 0, 0.15)';
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.backgroundColor = '#9c27b0';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-                      }}
+                      className="todo-create-btn"
+                    >
+                      <span>📝</span> Create Todo List
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="calculator-box item-calculator">
+            <h1>Item Material Calculator</h1>
+            
+            {error && <div className="calculator-error">{error}</div>}
+
+            <div className="calculator-form">
+              {craftRequests.map((request, index) => (
+                <div key={index} className="calculator-item-row">
+                  <Select
+                    className="calculator-item-select"
+                    value={getSelectedOption(request.itemId)}
+                    onChange={(selectedOption) => handleItemChange(index, selectedOption)}
+                    options={itemOptions}
+                    formatOptionLabel={({ label, image }) => (
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <img src={image} alt={label} style={{ width: 30, height: 30, marginRight: 10 }} />
+                        {label}
+                      </div>
+                    )}
+                    placeholder="Select an item..."
+                    isSearchable
+                  />
+                  <input
+                    type="number"
+                    min="1"
+                    value={request.amount}
+                    onChange={(e) => handleAmountChange(index, e.target.value)}
+                    className="calculator-amount-input"
+                  />
+                  {craftRequests.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveItem(index)}
+                      className="calculator-remove-btn"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+
+              <div className="calculator-actions">
+                <button
+                  type="button"
+                  onClick={handleAddItem}
+                  className="calculator-add-btn"
+                >
+                  + Add Item
+                </button>
+                <button
+                  type="button"
+                  onClick={calculateMaterials}
+                  className="calculator-calculate-btn"
+                  disabled={isCalculating}
+                >
+                  {isCalculating ? 'Calculating...' : 'Calculate Materials'}
+                </button>
+              </div>
+
+              {itemMaterials.length > 0 && (
+                <div className="calculator-results">
+                  <h2>Required Materials:</h2>
+                  <div className="calculator-materials-list">
+                    {itemMaterials.map((material) => (
+                      <div key={material.item_id} className="calculator-material-item">
+                        <img src={material.item_image} alt={material.item_name} />
+                        <span>{material.item_name}</span>
+                        <span className="calculator-material-amount">x{material.amount}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="calculator-todo-button">
+                    <button
+                      type="button"
+                      onClick={() => createTodoFromMaterials(itemMaterials)}
+                      className="todo-create-btn"
                     >
                       <span>📝</span> Create Todo List
                     </button>
