@@ -131,6 +131,8 @@ const TodoList = () => {
   const [selectedStatus, setSelectedStatus] = useState('pending');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isResizing, setIsResizing] = useState(false);
+  const [detailsWidth, setDetailsWidth] = useState(400);
 
   // Load tasks from API
   const loadTasks = async () => {
@@ -310,6 +312,39 @@ const TodoList = () => {
     setShowDeleteConfirmation(true);
   };
 
+  const handleResizeStart = (e) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
+  const handleResizeMove = (e) => {
+    if (!isResizing) return;
+    
+    const mainArea = document.querySelector('.todo-main-area');
+    const mainAreaRect = mainArea.getBoundingClientRect();
+    const newWidth = mainAreaRect.right - e.clientX;
+    
+    if (newWidth >= 320 && newWidth <= 800) {
+      setDetailsWidth(newWidth);
+    }
+  };
+
+  const handleResizeEnd = () => {
+    setIsResizing(false);
+  };
+
+  useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleResizeMove);
+      document.addEventListener('mouseup', handleResizeEnd);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleResizeMove);
+      document.removeEventListener('mouseup', handleResizeEnd);
+    };
+  }, [isResizing]);
+
   const renderTaskItem = (task) => (
     <div
       key={task.id}
@@ -473,7 +508,11 @@ const TodoList = () => {
           </main>
 
           {/* Task Details */}
-          <section className="todo-details">
+          <section className="todo-details" style={{ width: `${detailsWidth}px` }}>
+            <div 
+              className="todo-resize-handle"
+              onMouseDown={handleResizeStart}
+            ></div>
             <h2>Task Details</h2>
             <div className="todo-details-content">
               {currentTask ? (
