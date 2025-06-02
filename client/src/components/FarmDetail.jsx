@@ -144,6 +144,7 @@ const FarmDetail = () => {
                     <img 
                       src={`https://i.ytimg.com/vi/${farm.farm_video_url.split('/').pop()}/maxresdefault.jpg`} 
                       alt={farm.farm_name} 
+                      className="farm-detail-image"
                     />
                   ) : (
                     <iframe
@@ -160,6 +161,12 @@ const FarmDetail = () => {
                   <div className="farm-info-section">
                     <h3><i className="fas fa-info-circle"></i> Description</h3>
                     <p>{farm.farm_description}</p>
+                  </div>
+                  <div className="farm-info-section">
+                    <h3><i className="fas fa-ruler-combined"></i> Farm Area</h3>
+                    <div className="farm-tutorial-box">
+                      <p>{farm.farm_area}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -194,16 +201,6 @@ const FarmDetail = () => {
                       </li>
                     ))}
                   </ul>
-                </div>
-              </div>
-
-              {/* Area Section */}
-              <div className="farm-detail-tutorial">
-                <div className="farm-info-section">
-                  <h3><i className="fas fa-ruler-combined"></i> Farm Area</h3>
-                  <div className="farm-tutorial-box">
-                    <p>{farm.farm_area}</p>
-                  </div>
                 </div>
               </div>
             </div>
