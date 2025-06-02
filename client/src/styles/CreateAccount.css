@@ -244,6 +244,39 @@ input:focus {
   width: 100%;
 }
 
+/* Guest Link */
+.login-guest-link {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  color: #000;
+  text-decoration: none;
+  font-size: 0.9em;
+  position: relative;
+  padding: 5px 0;
+  width: fit-content;
+  transition: all 0.3s ease;
+}
+
+.login-guest-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #532911;
+  transition: width 0.3s ease;
+}
+
+.login-guest-link:hover::after {
+  width: 100%;
+}
+
+.login-guest-link:hover {
+  color: #532911;
+}
+
 /* Error Message */
 .error-message {
     color: #ff0000;
