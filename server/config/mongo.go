@@ -2,6 +2,8 @@ package config
 
 import (
 	"context"
+	"errors"
+	"log"
 	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,11 +17,17 @@ var UserCollection *mongo.Collection
 var ItemCollection *mongo.Collection
 var RecipeCollection *mongo.Collection
 var ToDoListCollection *mongo.Collection
-var FarmCollection *mongo.Collection // <-- Added this line
+var FarmCollection *mongo.Collection
 
 func ConnectMongoDB(ctx context.Context) error {
 	uri := os.Getenv("MONGODB_URI")
 	dbName := os.Getenv("MONGODB_NAME")
+
+	// Warn if env vars are missing
+	if uri == "" || dbName == "" {
+		log.Println("Warning: MONGODB_URI or MONGODB_NAME is not set. Make sure environment variables are configured in Render.")
+		return errors.New("missing MONGODB_URI or MONGODB_NAME")
+	}
 
 	clientOpts := options.Client().ApplyURI(uri)
 	client, err := mongo.Connect(ctx, clientOpts)
@@ -35,27 +43,21 @@ func ConnectMongoDB(ctx context.Context) error {
 	ItemCollection = MongoDB.Collection("items")
 	RecipeCollection = MongoDB.Collection("recipes")
 	ToDoListCollection = MongoDB.Collection("todolists")
-	FarmCollection = MongoDB.Collection("farms") // <-- Added this line
+	FarmCollection = MongoDB.Collection("farms")
 
 	// Create indexes
 	userIndexModel := mongo.IndexModel{
-		Keys: map[string]interface{}{
-			"email": 1,
-		},
+		Keys:    map[string]interface{}{"email": 1},
 		Options: options.Index().SetUnique(true),
 	}
 
 	itemIndexModel := mongo.IndexModel{
-		Keys: map[string]interface{}{
-			"item_name": 1,
-		},
+		Keys:    map[string]interface{}{"item_name": 1},
 		Options: options.Index().SetUnique(true),
 	}
 
 	recipeIndexModel := mongo.IndexModel{
-		Keys: map[string]interface{}{
-			"recipe_item": 1,
-		},
+		Keys:    map[string]interface{}{"recipe_item": 1},
 		Options: options.Index().SetUnique(true),
 	}
 
@@ -68,9 +70,7 @@ func ConnectMongoDB(ctx context.Context) error {
 	}
 
 	farmIndexModel := mongo.IndexModel{
-		Keys: bson.D{
-			{Key: "farm_name", Value: 1},
-		},
+		Keys:    bson.D{{Key: "farm_name", Value: 1}},
 		Options: options.Index().SetUnique(true),
 	}
 
@@ -78,22 +78,19 @@ func ConnectMongoDB(ctx context.Context) error {
 	if _, err = UserCollection.Indexes().CreateOne(ctx, userIndexModel); err != nil {
 		return err
 	}
-
 	if _, err = ItemCollection.Indexes().CreateOne(ctx, itemIndexModel); err != nil {
 		return err
 	}
-
 	if _, err = RecipeCollection.Indexes().CreateOne(ctx, recipeIndexModel); err != nil {
 		return err
 	}
-
 	if _, err = ToDoListCollection.Indexes().CreateOne(ctx, todoListIndexModel); err != nil {
 		return err
 	}
-
 	if _, err = FarmCollection.Indexes().CreateOne(ctx, farmIndexModel); err != nil {
 		return err
 	}
 
+	log.Println("✅ MongoDB connected and indexes created.")
 	return nil
 }
