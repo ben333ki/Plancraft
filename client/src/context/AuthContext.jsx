@@ -11,12 +11,9 @@ export const AuthProvider = ({ children }) => {
     // Check for token in localStorage on mount
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
-    
-    console.log('Stored user data:', storedUser);
-    
+      
     if (storedToken && storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      console.log('Parsed user data:', parsedUser);
       setToken(storedToken);
       setUser(parsedUser);
     }
