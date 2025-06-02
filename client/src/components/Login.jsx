@@ -122,10 +122,7 @@ const Login = () => {
             </form>
 
             <a href="/create-account" className="login-create-account">Create account</a>
-
-            <button type="button" className="login-guest-btn" onClick={() => navigate('/home')}>
-              Go to website without login
-            </button>
+            <a href="/home" className="login-guest-link">Go to Home</a>
 
             <div className="login-decor-small-bottom"></div>
             <div className="login-decor-box-bottom"></div>
