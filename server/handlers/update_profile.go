@@ -101,7 +101,8 @@ func UpdateProfile(c *fiber.Ctx) error {
 	}
 
 	// Generate new token (userID as hex string)
-	token, err := middleware.GenerateToken(user.UserID.Hex())
+	// Use a default expiration duration (e.g., 3 days) for profile updates
+	token, err := middleware.GenerateToken(user.UserID.Hex(), 3*24*time.Hour)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to generate token",

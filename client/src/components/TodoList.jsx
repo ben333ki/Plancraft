@@ -127,8 +127,8 @@ const TodoList = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPriorities, setSelectedPriorities] = useState([]);
-  const [showLateOnly, setShowLateOnly] = useState(false);
+  const [selectedPriority, setSelectedPriority] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('pending');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -139,9 +139,9 @@ const TodoList = () => {
       setError(null);
       const filters = {
         category: currentCategory !== 'all' ? currentCategory : undefined,
-        priority: selectedPriorities.length > 0 ? selectedPriorities.join(',') : undefined,
+        priority: selectedPriority || undefined,
         search: searchTerm || undefined,
-        status: showLateOnly ? 'late' : undefined
+        status: selectedStatus || undefined
       };
       
       const fetchedTasks = await todoApi.getAllTasks(filters);
@@ -165,14 +165,14 @@ const TodoList = () => {
     if (!loading) {
       loadTasks();
     }
-  }, [currentCategory, selectedPriorities, searchTerm, showLateOnly]);
+  }, [currentCategory, selectedPriority, searchTerm, selectedStatus]);
 
-  const togglePriority = (priority) => {
-    setSelectedPriorities(prev => 
-      prev.includes(priority) 
-        ? prev.filter(p => p !== priority)
-        : [...prev, priority]
-    );
+  const handlePriorityClick = (priority) => {
+    setSelectedPriority(prev => prev === priority ? '' : priority);
+  };
+
+  const handleStatusClick = (status) => {
+    setSelectedStatus(prev => prev === status ? '' : status);
   };
 
   // Filter Functions
@@ -192,8 +192,8 @@ const TodoList = () => {
   };
 
   const filterTasksByPriority = (taskList) => {
-    if (selectedPriorities.length === 0) return taskList;
-    return taskList.filter(task => selectedPriorities.includes(task.priority));
+    if (!selectedPriority) return taskList;
+    return taskList.filter(task => task.priority === selectedPriority);
   };
 
   // Sorting Tasks
@@ -227,7 +227,7 @@ const TodoList = () => {
       filtered = filterTasksByCategory(filtered);
     }
     
-    if (selectedPriorities.length > 0) {
+    if (selectedPriority) {
       filtered = filterTasksByPriority(filtered);
     }
     
@@ -356,8 +356,8 @@ const TodoList = () => {
               {PRIORITIES.map(priority => (
                 <span
                   key={priority}
-                  className={`todo-priority-item ${selectedPriorities.includes(priority) ? 'selected' : ''}`}
-                  onClick={() => togglePriority(priority)}
+                  className={`todo-priority-item ${selectedPriority === priority ? 'selected' : ''}`}
+                  onClick={() => handlePriorityClick(priority)}
                 >
                   {priority.charAt(0).toUpperCase() + priority.slice(1)}
                 </span>
@@ -370,13 +370,31 @@ const TodoList = () => {
             <h3>Task Status</h3>
             <div className="todo-status-filters">
               <button
-                className={`todo-late-btn ${showLateOnly ? 'active' : ''}`}
-                onClick={() => setShowLateOnly(!showLateOnly)}
+                className={`todo-pending-btn ${selectedStatus === 'pending' ? 'active' : ''}`}
+                onClick={() => handleStatusClick('pending')}
+              >
+                <span className="todo-pending-count">
+                  {tasks.filter(task => task.status === 'pending').length}
+                </span>
+                <span className="todo-pending-label">Pending Tasks</span>
+              </button>
+              <button
+                className={`todo-late-btn ${selectedStatus === 'late' ? 'active' : ''}`}
+                onClick={() => handleStatusClick('late')}
               >
                 <span className="todo-late-count">
                   {tasks.filter(task => task.status === 'late').length}
                 </span>
                 <span className="todo-late-label">Late Tasks</span>
+              </button>
+              <button
+                className={`todo-complete-btn ${selectedStatus === 'complete' ? 'active' : ''}`}
+                onClick={() => handleStatusClick('complete')}
+              >
+                <span className="todo-complete-count">
+                  {tasks.filter(task => task.status === 'complete').length}
+                </span>
+                <span className="todo-complete-label">Completed Tasks</span>
               </button>
             </div>
           </div>
@@ -413,7 +431,7 @@ const TodoList = () => {
             <div className="todo-tasks-section">
               <div className="todo-tasks-header">
                 <h2>
-                  {showLateOnly ? 'Late Tasks' : 
+                  {selectedStatus ? `${selectedStatus.charAt(0).toUpperCase() + selectedStatus.slice(1)} Tasks` : 
                    searchTerm ? 'Search Results' : 'Tasks'}
                 </h2>
                 <div className="todo-task-filters">
@@ -442,7 +460,7 @@ const TodoList = () => {
                   <div className="todo-empty-container">
                     <p className="todo-no-tasks">
                       {searchTerm ? 'No tasks match your search' :
-                       selectedPriorities.length > 0 ? 'No tasks match the selected priorities' :
+                       selectedPriority ? 'No tasks match the selected priority' :
                        currentCategory !== 'all' ? 'No tasks in this category' :
                        'No tasks found'}
                     </p>

@@ -449,51 +449,49 @@
     gap: 10px;
 }
 
+.todo-pending-btn,
 .todo-late-btn,
-.todo-completed-btn {
+.todo-complete-btn {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    border-radius: 5px;
-    background: #B27926;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
-                inset 0 0 20px rgba(0, 0, 0, 0.2);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 4px;
+    background-color: #603F10;
+    color: white;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
 }
 
+.todo-pending-btn:hover,
 .todo-late-btn:hover,
-.todo-completed-btn:hover {
-    background: #996518;
-    transform: translateY(-2px);
+.todo-complete-btn:hover {
+    background-color: #B27926;
+}
+
+.todo-pending-btn.active,
+.todo-late-btn.active,
+.todo-complete-btn.active {
+    background-color: rgba(76, 175, 80, 0.8);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
                 inset 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-.todo-late-btn.active,
-.todo-completed-btn.active {
-    background: rgba(76, 175, 80, 0.8);
-    border-color: rgba(76, 175, 80, 0.5);
-}
-
+.todo-pending-count,
 .todo-late-count,
-.todo-completed-count {
-    background: rgba(255, 255, 255, 0.2);
+.todo-complete-count {
+    background-color: rgba(255, 255, 255, 0.2);
     padding: 2px 8px;
     border-radius: 12px;
     font-size: 0.9em;
-    min-width: 24px;
-    text-align: center;
 }
 
+.todo-pending-label,
 .todo-late-label,
-.todo-completed-label {
+.todo-complete-label {
     font-size: 0.9em;
-    color: #fff;
 }
 
 /* Task Status Indicators */
@@ -505,8 +503,8 @@
     border-left: 8px solid #4CAF50;
 }
 
-.todo-complete-btn,
-.todo-uncomplete-btn {
+.todo-details .todo-complete-btn,
+.todo-details .todo-uncomplete-btn {
     background: rgba(76, 175, 80, 0.8);
     color: white;
     padding: 8px 15px;
@@ -517,16 +515,16 @@
     transition: all 0.3s ease;
 }
 
-.todo-complete-btn:hover {
+.todo-details .todo-complete-btn:hover {
     background: rgba(76, 175, 80, 1);
     transform: translateY(-2px);
 }
 
-.todo-uncomplete-btn {
+.todo-details .todo-uncomplete-btn {
     background: rgba(255, 152, 0, 0.8);
 }
 
-.todo-uncomplete-btn:hover {
+.todo-details .todo-uncomplete-btn:hover {
     background: rgba(255, 152, 0, 1);
     transform: translateY(-2px);
 }

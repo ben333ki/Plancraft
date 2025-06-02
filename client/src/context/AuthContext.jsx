@@ -12,14 +12,19 @@ export const AuthProvider = ({ children }) => {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
     
+    console.log('Stored user data:', storedUser);
+    
     if (storedToken && storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      console.log('Parsed user data:', parsedUser);
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      setUser(parsedUser);
     }
     setLoading(false);
   }, []);
 
   const login = (userData, token) => {
+    console.log('Login called with user data:', userData);
     setUser(userData);
     setToken(token);
     localStorage.setItem('token', token);

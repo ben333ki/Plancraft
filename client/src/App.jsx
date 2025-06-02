@@ -17,6 +17,7 @@ import FarmDetail from './components/FarmDetail';
 import Calculator from './components/Calculator';
 import CreateFarm from './components/CreateFarm';
 import DeleteFarm from './components/DeleteFarm';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
   return (
@@ -29,17 +30,42 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/craft" element={<Craft />} />
-          <Route path="/todolist" element={<TodoList />} />
-          <Route path='/createitem' element={<CreateItem/>} />
-          <Route path='/createrecipe' element={<CreateRecipe/>} />
-          <Route path='/createfarm' element={<CreateFarm/>} />
-          <Route path='/deletefarm' element={<DeleteFarm/>} />
-          <Route path='/deleterecipe' element={<DeleteRecipe/>} />
           <Route path="/farm" element={<Farm />} />
           <Route path="/farm/:farmId" element={<FarmDetail />} />
           <Route path='/calculator' element={<Calculator />} />
 
+          <Route path='/createitem' element={
+            <AdminRoute>
+              <CreateItem/>
+            </AdminRoute>
+          } />
+          <Route path='/createrecipe' element={
+            <AdminRoute>
+              <CreateRecipe/>
+            </AdminRoute>
+          } />
+          <Route path='/createfarm' element={
+            <AdminRoute>
+              <CreateFarm/>
+            </AdminRoute>
+          } />
+          <Route path='/deleterecipe' element={
+            <AdminRoute>
+              <DeleteRecipe/>
+            </AdminRoute>
+          } />
+          <Route path='/deletefarm' element={
+            <AdminRoute>
+              <DeleteFarm/>
+            </AdminRoute>
+          } />
+
           {/* Protected Routes */}
+          <Route path="/todolist" element={
+            <ProtectedRoute>
+              <TodoList />
+            </ProtectedRoute>
+          } />
           <Route path="/profile" element={
             <ProtectedRoute>
               <Profile />

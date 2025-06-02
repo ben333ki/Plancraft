@@ -176,6 +176,32 @@ func UpdateTask(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch updated task: " + err.Error()})
 	}
 
+	// Check and update status based on end date
+	now := time.Now()
+	if updatedTask.EndDate.Before(now) {
+		// Update task status in DB
+		_, err := config.ToDoListCollection.UpdateOne(ctx,
+			bson.M{"_id": updatedTask.ToDoListID, "userID": userID},
+			bson.M{"$set": bson.M{"status": "late"}},
+		)
+		if err != nil {
+			fmt.Println("Failed to auto-update task to late:", err)
+		} else {
+			updatedTask.Status = "late" // Update in memory as well
+		}
+	} else {
+		// Update task status to pending if end date is in the future
+		_, err := config.ToDoListCollection.UpdateOne(ctx,
+			bson.M{"_id": updatedTask.ToDoListID, "userID": userID},
+			bson.M{"$set": bson.M{"status": "pending"}},
+		)
+		if err != nil {
+			fmt.Println("Failed to auto-update task to pending:", err)
+		} else {
+			updatedTask.Status = "pending" // Update in memory as well
+		}
+	}
+
 	return c.JSON(updatedTask)
 }
 

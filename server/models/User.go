@@ -12,5 +12,6 @@ type User struct {
 	Email          string             `bson:"email" json:"email"`
 	Password       string             `bson:"password" json:"password"`
 	ProfilePicture string             `bson:"profile_picture" json:"profile_picture"`
+	Role           string             `bson:"role" json:"role"` // "user" or "admin"
 	CreatedAt      time.Time          `bson:"created_at" json:"created_at"`
 }

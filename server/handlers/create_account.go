@@ -63,6 +63,7 @@ func CreateAccount(c *fiber.Ctx) error {
 		Email:          body.Email,
 		Password:       string(hashedPassword),
 		ProfilePicture: defaultProfilePicture,
+		Role:           "user",
 		CreatedAt:      time.Now(),
 	}
 
@@ -75,7 +76,8 @@ func CreateAccount(c *fiber.Ctx) error {
 	}
 
 	// Generate JWT
-	token, err := middleware.GenerateToken(newUser.UserID.Hex())
+	// Use a default expiration duration (e.g., 3 days) for account creation
+	token, err := middleware.GenerateToken(newUser.UserID.Hex(), 3*24*time.Hour)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to generate token",

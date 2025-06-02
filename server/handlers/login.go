@@ -16,8 +16,9 @@ import (
 
 func Login(c *fiber.Ctx) error {
 	type Request struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email      string `json:"email"`
+		Password   string `json:"password"`
+		RememberMe bool   `json:"rememberMe"`
 	}
 
 	var body Request
@@ -60,8 +61,16 @@ func Login(c *fiber.Ctx) error {
 
 	fmt.Printf("Password verified, generating token\n")
 
+	// Determine token expiration duration based on RememberMe
+	var duration time.Duration
+	if body.RememberMe {
+		duration = 14 * 24 * time.Hour // 14 days
+	} else {
+		duration = 3 * 24 * time.Hour // 3 days
+	}
+
 	// Generate JWT token using user ID (ObjectID.Hex())
-	token, err := middleware.GenerateToken(user.UserID.Hex())
+	token, err := middleware.GenerateToken(user.UserID.Hex(), duration)
 	if err != nil {
 		fmt.Printf("Token generation failed: %v\n", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -79,6 +88,7 @@ func Login(c *fiber.Ctx) error {
 			"username":        user.Username,
 			"email":           user.Email,
 			"profile_picture": user.ProfilePicture,
+			"role":            user.Role,
 		},
 	})
 }

@@ -150,6 +150,10 @@ const CreateAccount = () => {
             <a href="/login" className="login-link">
               Already have an account?
             </a>
+
+            <button type="button" className="create-account-guest-btn" onClick={() => navigate('/home')}>
+              Go to website without login
+            </button>
           </div>
         </div>
       </div>

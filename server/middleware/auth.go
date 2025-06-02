@@ -28,11 +28,11 @@ func init() {
 	JWTSecret = []byte(JWT_SECRET_KEY)
 }
 
-// GenerateToken accepts a MongoDB ObjectID as string
-func GenerateToken(userID string) (string, error) {
+// GenerateToken accepts a MongoDB ObjectID as string and a duration
+func GenerateToken(userID string, duration time.Duration) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
-		"exp":     time.Now().Add(24 * time.Hour).Unix(),
+		"exp":     time.Now().Add(duration).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

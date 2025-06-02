@@ -31,7 +31,7 @@ const Home = () => {
                   </div>
                 </a>
 
-                <a href="#" className="home-feature-card">
+                <a href="farm" className="home-feature-card">
                   <img src="/Image/Wheat.webp" alt="Farm Icon" />
                   <div className="home-feature-content">
                     <h1>ระบบ Farm</h1>
@@ -39,7 +39,7 @@ const Home = () => {
                   </div>
                 </a>
 
-                <a href="#" className="home-feature-card">
+                <a href="/todolist" className="home-feature-card">
                   <img src="/Image/icon-to do list.png" alt="To Do List Icon" />
                   <div className="home-feature-content">
                     <h1>To do list</h1>
@@ -47,7 +47,7 @@ const Home = () => {
                   </div>
                 </a>
 
-                <a href="#" className="home-feature-card">
+                <a href="/calculator" className="home-feature-card">
                   <img src="/Image/icon-calculator.png" alt="Calculator Icon" />
                   <div className="home-feature-content">
                     <h1>คำนวน</h1>

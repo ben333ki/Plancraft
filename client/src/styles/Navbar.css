@@ -50,6 +50,7 @@
 }
 
 .navbar-menu-item {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -84,6 +85,16 @@
     align-items: center;
 }
 
+.pending-task-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    border: 1px solid white;
+}
 
 /* Navbar profile-login */
 .navbar-profile {
@@ -154,4 +165,78 @@
     font-size: 1em;
     font-weight: bold;
     color: white;
+}
+
+/* Admin Dropdown Styles */
+.navbar-admin-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.admin-dropdown-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 20px;
+    color: white;
+    font-size: 14px;
+    height: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-dropdown-button:hover {
+    background-color: #B27926;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #603F10;
+    min-width: 200px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 8px 0;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.navbar-admin-dropdown:hover .admin-dropdown-content {
+    display: block;
+    opacity: 1;
+}
+
+.admin-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.admin-dropdown-item:hover {
+    background-color: #B27926;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-dropdown-item img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.admin-dropdown-item span {
+    font-size: 14px;
+    white-space: nowrap;
 }
