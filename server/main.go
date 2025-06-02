@@ -22,8 +22,8 @@ func main() {
 	fmt.Println("Server is running")
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
-	}
+		log.Println("Warning: .env file not found, relying on environment variables")
+	}	
 
 	// Connect to MongoDB
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

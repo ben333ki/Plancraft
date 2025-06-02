@@ -4,7 +4,6 @@ import Navbar from './Navbar';
 import ItemCategories from './ItemCategories';
 import ItemsGrid from './ItemsGrid';
 import ItemDetails from './ItemDetails';
-import Tooltip from './Tooltip';
 import '../styles/Craft.css';
 import CraftingRecipeTree from './CraftingRecipeTree';
 

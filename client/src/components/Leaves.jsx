@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/leaves.css';
+import '../styles/Leaves.css';
 
 const Leaves = () => {
   return (
