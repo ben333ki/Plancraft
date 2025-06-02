@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from './Navbar';
 import '../styles/Farm.css';
+import { API_URL } from '../config/constants';
 
 const FarmDetail = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const FarmDetail = () => {
     const fetchFarmAndItems = async () => {
       try {
         // Fetch all farms
-        const response = await fetch('http://localhost:3000/farms');
+        const response = await fetch(`${API_URL}/farms`);
         if (!response.ok) throw new Error('Failed to fetch farms');
         const data = await response.json();
         
@@ -28,7 +29,7 @@ const FarmDetail = () => {
         setFarm(selectedFarm);
 
         // Fetch all items
-        const itemsResponse = await fetch('http://localhost:3000/items');
+        const itemsResponse = await fetch(`${API_URL}/items`);
         if (!itemsResponse.ok) throw new Error('Failed to fetch items');
         const itemsData = await itemsResponse.json();
         

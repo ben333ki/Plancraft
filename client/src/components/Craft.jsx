@@ -6,6 +6,7 @@ import ItemsGrid from './ItemsGrid';
 import ItemDetails from './ItemDetails';
 import '../styles/Craft.css';
 import CraftingRecipeTree from './CraftingRecipeTree';
+import { API_URL } from '../config/constants';
 
 const Craft = () => {
     const [activeCategory, setActiveCategory] = useState('Tools');
@@ -47,7 +48,7 @@ const Craft = () => {
 
     const fetchItems = async () => {
         try {
-            const response = await fetch('http://localhost:3000/items');
+            const response = await fetch(`${API_URL}/items`);
             if (!response.ok) {
                 throw new Error('Failed to fetch items');
             }

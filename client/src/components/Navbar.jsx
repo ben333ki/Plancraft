@@ -3,8 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Navbar.css';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
+import { API_URL } from '../config/constants';
 
-const API_TODO_TASKS_URL = 'http://localhost:3000/api/todolist/tasks';
+const API_TODO_TASKS_URL = `${API_URL}/api/todolist/tasks`;
 
 // Login Alert Modal Component
 const LoginAlertModal = ({ onClose, onLogin }) => {

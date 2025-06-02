@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from './Navbar';
 import '../styles/Calculator.css';
 import Select from 'react-select';
+import { API_URL } from '../config/constants';
 
 function Calculator() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function Calculator() {
       setIsLoading(true);
       try {
         // Fetch items
-        const itemsResponse = await fetch("http://localhost:3000/items");
+        const itemsResponse = await fetch(`${API_URL}/items`);
         if (!itemsResponse.ok) {
           throw new Error('Failed to fetch items');
         }
@@ -35,7 +36,7 @@ function Calculator() {
         setItems(extractedItems);
 
         // Fetch farms
-        const farmsResponse = await fetch('http://localhost:3000/farms');
+        const farmsResponse = await fetch(`${API_URL}/farms`);
         if (!farmsResponse.ok) {
           throw new Error('Failed to fetch farms');
         }
@@ -95,7 +96,7 @@ function Calculator() {
         amount: parseInt(req.amount) > 0 ? parseInt(req.amount) : 1
       }));
 
-      const response = await fetch("http://localhost:3000/items/calculate-materials", {
+      const response = await fetch(`${API_URL}/items/calculate-materials`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -159,7 +160,7 @@ function Calculator() {
       // Calculate materials for each farm
       const allMaterials = [];
       for (const request of farmRequests) {
-        const response = await fetch("http://localhost:3000/farms/calculate-materials", {
+        const response = await fetch(`${API_URL}/farms/calculate-materials`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -432,7 +433,7 @@ function Calculator() {
                 `${material.item_name} x ${material.amount}`
               ).join('\n');
 
-              const response = await fetch("http://localhost:3000/api/todolist/tasks", {
+              const response = await fetch(`${API_URL}/api/todolist/tasks`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

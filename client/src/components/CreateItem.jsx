@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import '../styles/CreateItem.css';
+import { API_URL } from '../config/constants';
 
 const CATEGORIES = [
     'Tools', 
@@ -53,7 +54,7 @@ const CreateItem = () => {
     const formData = new FormData();
     formData.append('image', file);
 
-    const response = await fetch('http://localhost:3000/api/upload-image', {
+    const response = await fetch(`${API_URL}/api/upload-image`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -83,7 +84,7 @@ const CreateItem = () => {
       }
 
       // Then create the item with the image URL
-      const response = await fetch('http://localhost:3000/api/create-item', {
+      const response = await fetch(`${API_URL}/api/create-item`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

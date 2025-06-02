@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from './Navbar';
 import '../styles/DeleteRecipe.css';
+import { API_URL } from '../config/constants';
 
 function DeleteRecipe() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function DeleteRecipe() {
     const fetchRecipes = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:3000/items");
+        const response = await fetch(`${API_URL}/items`);
         if (!response.ok) {
           throw new Error('Failed to fetch recipes');
         }
@@ -62,7 +63,7 @@ function DeleteRecipe() {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:3000/api/delete-recipe/${recipeId}`, {
+      const response = await fetch(`${API_URL}/api/delete-recipe/${recipeId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,

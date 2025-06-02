@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from './Navbar';
 import '../styles/DeleteRecipe.css';
+import { API_URL } from '../config/constants';
 
 function DeleteFarm() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function DeleteFarm() {
     const fetchFarms = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:3000/farms");
+        const response = await fetch(`${API_URL}/farms`);
         if (!response.ok) {
           throw new Error('Failed to fetch farms');
         }
@@ -55,7 +56,7 @@ function DeleteFarm() {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:3000/api/delete-farm/${farmId}`, {
+      const response = await fetch(`${API_URL}/api/delete-farm/${farmId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,

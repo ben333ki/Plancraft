@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CraftingGrid from './CraftingGrid';
+import { API_URL } from '../config/constants';
 
 const findItemByID = (items, id) => {
   return items.find(entry => entry.item.ItemID === id);
@@ -32,7 +33,7 @@ const CraftingRecipeTree = ({ rootItemID }) => {
     const [recipeChain, setRecipeChain] = useState([]);
   
     useEffect(() => {
-      fetch(`http://localhost:3000/items/${rootItemID}/recipe-tree`)
+      fetch(`${API_URL}/items/${rootItemID}/recipe-tree`)
         .then(res => res.json())
         .then(data => {
           setItems(data.items);

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from './Navbar';
 import '../styles/CreateRecipe.css';
 import Select from 'react-select';
+import { API_URL } from '../config/constants';
 
 function CreateFarm() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ function CreateFarm() {
     const fetchItems = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:3000/items");
+        const response = await fetch(`${API_URL}/items`);
         if (!response.ok) {
           throw new Error('Failed to fetch items');
         }
@@ -139,7 +140,7 @@ function CreateFarm() {
 
       console.log('Submitting data:', submitData); // Debug log
 
-      const response = await fetch("http://localhost:3000/api/create-farm", {
+      const response = await fetch(`${API_URL}/api/create-farm`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

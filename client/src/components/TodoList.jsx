@@ -3,8 +3,9 @@ import '../styles/TodoList.css';
 import Navbar from './Navbar';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import { API_URL } from '../config/constants';
 
-const API_BASE_URL = 'http://localhost:3000/api/todolist/tasks';
+const API_BASE_URL = `${API_URL}/api/todolist/tasks`;
 
 const CATEGORIES = [
   { key: 'all', label: 'All Tasks' },

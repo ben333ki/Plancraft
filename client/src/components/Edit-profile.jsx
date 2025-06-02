@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Edit-profile.css';
 import Navbar from './Navbar';
 import { AuthContext } from '../context/AuthContext';
+import { API_URL } from '../config/constants';
 
 const EditProfile = () => {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ const EditProfile = () => {
                 const formData = new FormData();
                 formData.append('image', e.target.files[0]);
 
-                const response = await fetch('http://localhost:3000/api/upload-image', {
+                const response = await fetch(`${API_URL}/api/upload-image`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -75,7 +76,7 @@ const EditProfile = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/api/update-profile', {
+            const response = await fetch(`${API_URL}/api/update-profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

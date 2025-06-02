@@ -3,6 +3,7 @@ import Leaves from './Leaves';
 import '../styles/CreateAccount.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { API_URL } from '../config/constants';
 
 const CreateAccount = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const CreateAccount = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/create-account', {
+      const response = await fetch(`${API_URL}/create-account`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
