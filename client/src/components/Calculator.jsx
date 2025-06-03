@@ -225,6 +225,18 @@ function Calculator() {
     setMaterialsForTodo(materials);
   };
 
+  // Helper function to calculate stacks
+  const calculateStacks = (amount) => {
+    const fullStacks = Math.floor(amount / 64);
+    const remainder = amount % 64;
+    const totalStacks = fullStacks + (remainder > 0 ? 1 : 0);
+    return {
+      fullStacks,
+      remainder,
+      totalStacks
+    };
+  };
+
   if (isLoading) {
     return (
       <>
@@ -307,15 +319,28 @@ function Calculator() {
 
               {farmMaterials.length > 0 && (
                 <div className="calculator-results">
-                  <h2>Required Materials:</h2>
+                  <div className="calculator-results-header">
+                    <h2>Required Materials:</h2>
+                    <span className="stack-note">1 set = x64</span>
+                  </div>
                   <div className="calculator-materials-list">
-                    {farmMaterials.map((material) => (
-                      <div key={material.item_id} className="calculator-material-item">
-                        <img src={material.item_image} alt={material.item_name} />
-                        <span>{material.item_name}</span>
-                        <span className="calculator-material-amount">x{material.amount}</span>
-                      </div>
-                    ))}
+                    {farmMaterials.map((material) => {
+                      const stacks = calculateStacks(material.amount);
+                      return (
+                        <div key={material.item_id} className="calculator-material-item">
+                          <img src={material.item_image} alt={material.item_name} />
+                          <span>{material.item_name}</span>
+                          <div className="calculator-material-amount">
+                            {stacks.fullStacks > 0 && <span>{stacks.fullStacks} set</span>}
+                            {stacks.remainder > 0 && (
+                              <span className="remainder-stack">
+                                {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="calculator-todo-button">
                     <button
@@ -392,15 +417,28 @@ function Calculator() {
 
               {itemMaterials.length > 0 && (
                 <div className="calculator-results">
-                  <h2>Required Materials:</h2>
+                  <div className="calculator-results-header">
+                    <h2>Required Materials:</h2>
+                    <span className="stack-note">1 set = x64</span>
+                  </div>
                   <div className="calculator-materials-list">
-                    {itemMaterials.map((material) => (
-                      <div key={material.item_id} className="calculator-material-item">
-                        <img src={material.item_image} alt={material.item_name} />
-                        <span>{material.item_name}</span>
-                        <span className="calculator-material-amount">x{material.amount}</span>
-                      </div>
-                    ))}
+                    {itemMaterials.map((material) => {
+                      const stacks = calculateStacks(material.amount);
+                      return (
+                        <div key={material.item_id} className="calculator-material-item">
+                          <img src={material.item_image} alt={material.item_name} />
+                          <span>{material.item_name}</span>
+                          <div className="calculator-material-amount">
+                            {stacks.fullStacks > 0 && <span>{stacks.fullStacks} set</span>}
+                            {stacks.remainder > 0 && (
+                              <span className="remainder-stack">
+                                {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="calculator-todo-button">
                     <button

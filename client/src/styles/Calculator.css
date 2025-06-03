@@ -140,6 +140,33 @@
   border-radius: 4px;
 }
 
+.calculator-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.stack-note {
+  color: #666;
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+.calculator-material-amount {
+  margin-left: auto;
+  font-weight: bold;
+  color: #2196F3;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.remainder-stack {
+  color: #2196F3;
+  font-size: 0.9em;
+}
+
 .calculator-materials-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -151,22 +178,17 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.75rem;
   background-color: white;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 48px;
 }
 
 .calculator-material-item img {
   width: 32px;
   height: 32px;
   object-fit: contain;
-}
-
-.calculator-material-amount {
-  margin-left: auto;
-  font-weight: bold;
-  color: #2196F3;
 }
 
 .calculator-todo-button {
