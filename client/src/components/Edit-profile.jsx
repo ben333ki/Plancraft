@@ -129,7 +129,7 @@ const EditProfile = () => {
                                 <img src={profileImage} alt="Profile" />
                                 <div className="edit-profile-edit-overlay">
                                     <label className="edit-profile-edit-icon" onClick={() => imageInputRef.current.click()}>
-                                        <img src="Image/icon-edit-profile.png" alt="Edit" />
+                                        <p>Edit</p>
                                     </label>
                                     <input
                                         type="file"
