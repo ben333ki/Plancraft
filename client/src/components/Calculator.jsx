@@ -21,6 +21,7 @@ function Calculator() {
   const [showTodoModal, setShowTodoModal] = useState(false);
   const [materialsForTodo, setMaterialsForTodo] = useState([]);
   const [showLoginAlert, setShowLoginAlert] = useState(false);
+  const [activeForm, setActiveForm] = useState('item'); // 'item' or 'farm'
 
   useEffect(() => {
     const fetchData = async () => {
@@ -225,6 +226,26 @@ function Calculator() {
     setMaterialsForTodo(materials);
   };
 
+  // Helper function to get selected items/farms
+  const getSelectedItems = () => {
+    if (activeForm === 'farm') {
+      return farmRequests
+        .filter(req => req.farmId)
+        .map(req => {
+          const farm = farms.find(f => f.farm_id === req.farmId);
+          return farm ? farm.farm_name : null;
+        })
+        .filter(Boolean);
+    }
+    return craftRequests
+      .filter(req => req.itemId)
+      .map(req => {
+        const item = items.find(i => i.ItemID === req.itemId);
+        return item ? item.ItemName : null;
+      })
+      .filter(Boolean);
+  };
+
   // Helper function to calculate stacks
   const calculateStacks = (amount) => {
     const fullStacks = Math.floor(amount / 64);
@@ -257,202 +278,221 @@ function Calculator() {
       <Navbar />
       <div className="calculator-page">
         <div className="calculator-container">
-          <div className="calculator-box farm-calculator">
-            <h1>Farm Material Calculator</h1>
-            
-            {error && <div className="calculator-error">{error}</div>}
-
-            <div className="calculator-form">
-              {farmRequests.map((request, index) => (
-                <div key={index} className="calculator-item-row">
-                  <Select
-                    className="calculator-item-select"
-                    value={farmOptions.find(opt => opt.value === request.farmId) || null}
-                    onChange={(selectedOption) => handleFarmChange(index, selectedOption)}
-                    options={farmOptions}
-                    formatOptionLabel={({ label, image }) => (
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={image} alt={label} style={{ width: 30, height: 30, marginRight: 10 }} />
-                        {label}
-                      </div>
-                    )}
-                    placeholder="Select a farm..."
-                    isSearchable
-                  />
-                  <input
-                    type="number"
-                    min="1"
-                    value={request.amount}
-                    onChange={(e) => handleFarmAmountChange(index, e.target.value)}
-                    className="calculator-amount-input"
-                    placeholder="Number of farms"
-                  />
-                  {farmRequests.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveFarm(index)}
-                      className="calculator-remove-btn"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-              ))}
-
-              <div className="calculator-actions">
-                <button
-                  type="button"
-                  onClick={handleAddFarm}
-                  className="calculator-add-btn"
-                >
-                  + Add Farm
-                </button>
-                <button
-                  type="button"
-                  onClick={calculateFarmMaterials}
-                  className="calculator-calculate-btn"
-                  disabled={isCalculating}
-                >
-                  {isCalculating ? 'Calculating...' : 'Calculate Materials'}
-                </button>
-              </div>
-
-              {farmMaterials.length > 0 && (
-                <div className="calculator-results">
-                  <div className="calculator-results-header">
-                    <h2>Required Materials:</h2>
-                    <span className="stack-note">1 set = x64</span>
-                  </div>
-                  <div className="calculator-materials-list">
-                    {farmMaterials.map((material) => {
-                      const stacks = calculateStacks(material.amount);
-                      return (
-                        <div key={material.item_id} className="calculator-material-item">
-                          <img src={material.item_image} alt={material.item_name} />
-                          <span>{material.item_name}</span>
-                          <div className="calculator-material-amount">
-                            {stacks.fullStacks > 0 && <span>{stacks.fullStacks} set</span>}
-                            {stacks.remainder > 0 && (
-                              <span className="remainder-stack">
-                                {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="calculator-todo-button">
-                    <button
-                      type="button"
-                      onClick={() => createTodoFromMaterials(farmMaterials)}
-                      className="todo-create-btn"
-                    >
-                      <span>📝</span> Create Todo List
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+          <div className="calculator-form-toggle">
+            <button 
+              className={`toggle-btn ${activeForm === 'item' ? 'active' : ''}`}
+              onClick={() => setActiveForm('item')}
+            >
+              Item Calculator
+            </button>
+            <button 
+              className={`toggle-btn ${activeForm === 'farm' ? 'active' : ''}`}
+              onClick={() => setActiveForm('farm')}
+            >
+              Farm Calculator
+            </button>
           </div>
 
-          <div className="calculator-box item-calculator">
-            <h1>Item Material Calculator</h1>
-            
-            {error && <div className="calculator-error">{error}</div>}
+          {activeForm === 'farm' && (
+            <div className="calculator-box farm-calculator">
+              <h1>Farm Material Calculator</h1>
+              
+              {error && <div className="calculator-error">{error}</div>}
 
-            <div className="calculator-form">
-              {craftRequests.map((request, index) => (
-                <div key={index} className="calculator-item-row">
-                  <Select
-                    className="calculator-item-select"
-                    value={getSelectedOption(request.itemId)}
-                    onChange={(selectedOption) => handleItemChange(index, selectedOption)}
-                    options={itemOptions}
-                    formatOptionLabel={({ label, image }) => (
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={image} alt={label} style={{ width: 30, height: 30, marginRight: 10 }} />
-                        {label}
-                      </div>
-                    )}
-                    placeholder="Select an item..."
-                    isSearchable
-                  />
-                  <input
-                    type="number"
-                    min="1"
-                    value={request.amount}
-                    onChange={(e) => handleAmountChange(index, e.target.value)}
-                    className="calculator-amount-input"
-                  />
-                  {craftRequests.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveItem(index)}
-                      className="calculator-remove-btn"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-              ))}
-
-              <div className="calculator-actions">
-                <button
-                  type="button"
-                  onClick={handleAddItem}
-                  className="calculator-add-btn"
-                >
-                  + Add Item
-                </button>
-                <button
-                  type="button"
-                  onClick={calculateMaterials}
-                  className="calculator-calculate-btn"
-                  disabled={isCalculating}
-                >
-                  {isCalculating ? 'Calculating...' : 'Calculate Materials'}
-                </button>
-              </div>
-
-              {itemMaterials.length > 0 && (
-                <div className="calculator-results">
-                  <div className="calculator-results-header">
-                    <h2>Required Materials:</h2>
-                    <span className="stack-note">1 set = x64</span>
-                  </div>
-                  <div className="calculator-materials-list">
-                    {itemMaterials.map((material) => {
-                      const stacks = calculateStacks(material.amount);
-                      return (
-                        <div key={material.item_id} className="calculator-material-item">
-                          <img src={material.item_image} alt={material.item_name} />
-                          <span>{material.item_name}</span>
-                          <div className="calculator-material-amount">
-                            {stacks.fullStacks > 0 && <span>{stacks.fullStacks} set</span>}
-                            {stacks.remainder > 0 && (
-                              <span className="remainder-stack">
-                                {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
-                              </span>
-                            )}
-                          </div>
+              <div className="calculator-form">
+                {farmRequests.map((request, index) => (
+                  <div key={index} className="calculator-item-row">
+                    <Select
+                      className="calculator-item-select"
+                      value={farmOptions.find(opt => opt.value === request.farmId) || null}
+                      onChange={(selectedOption) => handleFarmChange(index, selectedOption)}
+                      options={farmOptions}
+                      formatOptionLabel={({ label, image }) => (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <img src={image} alt={label} style={{ width: 30, height: 30, marginRight: 10 }} />
+                          {label}
                         </div>
-                      );
-                    })}
+                      )}
+                      placeholder="Select a farm..."
+                      isSearchable
+                    />
+                    <input
+                      type="number"
+                      min="1"
+                      value={request.amount}
+                      onChange={(e) => handleFarmAmountChange(index, e.target.value)}
+                      className="calculator-amount-input"
+                      placeholder="Number of farms"
+                    />
+                    {farmRequests.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFarm(index)}
+                        className="calculator-remove-btn"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
-                  <div className="calculator-todo-button">
-                    <button
-                      type="button"
-                      onClick={() => createTodoFromMaterials(itemMaterials)}
-                      className="todo-create-btn"
-                    >
-                      <span>📝</span> Create Todo List
-                    </button>
-                  </div>
+                ))}
+
+                <div className="calculator-actions">
+                  <button
+                    type="button"
+                    onClick={handleAddFarm}
+                    className="calculator-add-btn"
+                  >
+                    + Add Farm
+                  </button>
+                  <button
+                    type="button"
+                    onClick={calculateFarmMaterials}
+                    className="calculator-calculate-btn"
+                    disabled={isCalculating}
+                  >
+                    {isCalculating ? 'Calculating...' : 'Calculate Materials'}
+                  </button>
                 </div>
-              )}
+
+                {farmMaterials.length > 0 && (
+                  <div className="calculator-results">
+                    <div className="calculator-results-header">
+                      <h2>Required Materials:</h2>
+                      <span className="stack-note">1 Stack = x64</span>
+                    </div>
+                    <div className="calculator-materials-list">
+                      {farmMaterials.map((material) => {
+                        const stacks = calculateStacks(material.amount);
+                        return (
+                          <div key={material.item_id} className="calculator-material-item">
+                            <img src={material.item_image} alt={material.item_name} />
+                            <span>{material.item_name}</span>
+                            <div className="calculator-material-amount">
+                              {stacks.fullStacks > 0 && <span>{stacks.fullStacks} Stack</span>}
+                              {stacks.remainder > 0 && (
+                                <span className="remainder-stack">
+                                  {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="calculator-todo-button">
+                      <button
+                        type="button"
+                        onClick={() => createTodoFromMaterials(farmMaterials)}
+                        className="todo-create-btn"
+                      >
+                        <span>📝</span> Create Todo List
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
+
+          {activeForm === 'item' && (
+            <div className="calculator-box item-calculator">
+              <h1>Item Material Calculator</h1>
+              
+              {error && <div className="calculator-error">{error}</div>}
+
+              <div className="calculator-form">
+                {craftRequests.map((request, index) => (
+                  <div key={index} className="calculator-item-row">
+                    <Select
+                      className="calculator-item-select"
+                      value={getSelectedOption(request.itemId)}
+                      onChange={(selectedOption) => handleItemChange(index, selectedOption)}
+                      options={itemOptions}
+                      formatOptionLabel={({ label, image }) => (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <img src={image} alt={label} style={{ width: 30, height: 30, marginRight: 10 }} />
+                          {label}
+                        </div>
+                      )}
+                      placeholder="Select an item..."
+                      isSearchable
+                    />
+                    <input
+                      type="number"
+                      min="1"
+                      value={request.amount}
+                      onChange={(e) => handleAmountChange(index, e.target.value)}
+                      className="calculator-amount-input"
+                    />
+                    {craftRequests.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(index)}
+                        className="calculator-remove-btn"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+
+                <div className="calculator-actions">
+                  <button
+                    type="button"
+                    onClick={handleAddItem}
+                    className="calculator-add-btn"
+                  >
+                    + Add Item
+                  </button>
+                  <button
+                    type="button"
+                    onClick={calculateMaterials}
+                    className="calculator-calculate-btn"
+                    disabled={isCalculating}
+                  >
+                    {isCalculating ? 'Calculating...' : 'Calculate Materials'}
+                  </button>
+                </div>
+
+                {itemMaterials.length > 0 && (
+                  <div className="calculator-results">
+                    <div className="calculator-results-header">
+                      <h2>Required Materials:</h2>
+                      <span className="stack-note">1 Stack = x64</span>
+                    </div>
+                    <div className="calculator-materials-list">
+                      {itemMaterials.map((material) => {
+                        const stacks = calculateStacks(material.amount);
+                        return (
+                          <div key={material.item_id} className="calculator-material-item">
+                            <img src={material.item_image} alt={material.item_name} />
+                            <span>{material.item_name}</span>
+                            <div className="calculator-material-amount">
+                              {stacks.fullStacks > 0 && <span>{stacks.fullStacks} Stack</span>}
+                              {stacks.remainder > 0 && (
+                                <span className="remainder-stack">
+                                  {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="calculator-todo-button">
+                      <button
+                        type="button"
+                        onClick={() => createTodoFromMaterials(itemMaterials)}
+                        className="todo-create-btn"
+                      >
+                        <span>📝</span> Create Todo List
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -460,17 +500,14 @@ function Calculator() {
       {showTodoModal && (
         <TodoFormModal
           materials={materialsForTodo}
+          selectedItems={getSelectedItems()}
+          isFromFarms={activeForm === 'farm'}
           onClose={() => {
             setShowTodoModal(false);
             setMaterialsForTodo([]);
           }}
           onSave={async (formData) => {
             try {
-              // Format materials into description
-              const description = materialsForTodo.map(material => 
-                `${material.item_name} x ${material.amount}`
-              ).join('\n');
-
               const response = await fetch(`${API_URL}/api/todolist/tasks`, {
                 method: 'POST',
                 headers: {
@@ -479,7 +516,7 @@ function Calculator() {
                 },
                 body: JSON.stringify({
                   title: formData.title,
-                  description: description,
+                  description: formData.description,
                   category: formData.category,
                   priority: formData.priority,
                   startDate: new Date(formData.startDate),
@@ -491,6 +528,9 @@ function Calculator() {
 
               if (!response.ok) {
                 const data = await response.json();
+                if (response.status === 500) {
+                  throw new Error('This title name already exists');
+                }
                 throw new Error(data.error || 'Failed to create todo');
               }
 
@@ -501,6 +541,7 @@ function Calculator() {
               setError(error.message);
             }
           }}
+          error={error}
         />
       )}
 
@@ -540,13 +581,30 @@ function Calculator() {
 }
 
 // Todo Form Modal Component
-const TodoFormModal = ({ materials, onClose, onSave }) => {
+const TodoFormModal = ({ materials, selectedItems, isFromFarms, onClose, onSave, error }) => {
+  // Format materials into description with a header
+  const formatAmount = (amount) => {
+    if (amount >= 64) {
+      const stacks = Math.floor(amount / 64);
+      const remainder = amount % 64;
+      return remainder > 0 
+        ? `${stacks} Stack + x${remainder}`
+        : `${stacks} Stack`;
+    }
+    return `x${amount}`;
+  };
+
+  const formattedDescription = `${isFromFarms ? 'Selected Farms:\n' : 'Selected Items:\n'}${selectedItems.map(item => `- ${item}`).join('\n')}\n\nMaterials List:\n${materials.map(material => 
+    `- ${material.item_name} ${formatAmount(material.amount)}`
+  ).join('\n')}\n\nAdditional Notes:`;
+
   const [formData, setFormData] = useState({
-    title: 'Materials Collection',
+    title: '',
     category: '',
     startDate: new Date().toISOString().split('T')[0],
     endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    priority: 'medium'
+    priority: 'medium',
+    description: formattedDescription
   });
 
   const handleSubmit = (e) => {
@@ -568,6 +626,11 @@ const TodoFormModal = ({ materials, onClose, onSave }) => {
           <h2>Create Todo List</h2>
           <button className="todo-close-modal" onClick={onClose}>&times;</button>
         </div>
+        {error && (
+          <div className="todo-modal-error">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="todo-form-group">
             <label htmlFor="title">Title</label>
@@ -621,6 +684,17 @@ const TodoFormModal = ({ materials, onClose, onSave }) => {
             />
           </div>
           <div className="todo-form-group">
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Materials list and additional notes"
+              rows="8"
+            />
+          </div>
+          <div className="todo-form-group">
             <label htmlFor="priority">Priority</label>
             <select
               id="priority"
@@ -656,5 +730,36 @@ const CATEGORIES = [
 ];
 
 const PRIORITIES = ['low', 'medium', 'high'];
+
+// Add these styles to your CSS
+const styles = `
+.calculator-form-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.toggle-btn {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #4a5568;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #4a5568;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: #4a5568;
+  color: white;
+}
+
+.toggle-btn.active {
+  background: #4a5568;
+  color: white;
+}
+`;
 
 export default Calculator;

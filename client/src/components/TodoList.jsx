@@ -271,7 +271,11 @@ const TodoList = () => {
       setShowModal(false);
       setEditingTask(null);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to save task');
+      if (err.response?.status === 500) {
+        setError('This title name already exists');
+      } else {
+        setError(err.response?.data?.error || 'Failed to save task');
+      }
       console.error('Error saving task:', err);
     } finally {
       setLoading(false);
@@ -581,8 +585,10 @@ const TodoList = () => {
           onClose={() => {
             setShowModal(false);
             setEditingTask(null);
+            setError(null);
           }}
           onSave={addTask}
+          error={error}
         />
       )}
 
@@ -604,7 +610,7 @@ const TodoList = () => {
 };
 
 // Task Form Modal Component
-const TaskFormModal = ({ task, onClose, onSave }) => {
+const TaskFormModal = ({ task, onClose, onSave, error }) => {
   const [formData, setFormData] = useState({
     title: task?.title || '',
     category: task?.category || '',
@@ -633,6 +639,11 @@ const TaskFormModal = ({ task, onClose, onSave }) => {
           <h2>{task ? 'Edit Task' : 'New Task'}</h2>
           <button className="todo-close-modal" onClick={onClose}>&times;</button>
         </div>
+        {error && (
+          <div className="todo-modal-error">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="todo-form-group">
             <label htmlFor="title">Title</label>
