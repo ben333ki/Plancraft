@@ -17,11 +17,11 @@ import (
 )
 
 func main() {
-	
+
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found — relying on Render environment variables")
 	}
-	
+
 	app := fiber.New(fiber.Config{
 		AppName: "Plancraft API",
 	})
@@ -71,6 +71,7 @@ func main() {
 	todolist.Patch("/:id/complete", handlers.MarkTaskComplete)
 	todolist.Patch("/:id/uncomplete", handlers.MarkTaskUncomplete)
 	todolist.Get("/late", handlers.GetLateTasks)
+	todolist.Get("/amount", handlers.GetAllTasksAmount)
 
 	// Get port from environment variable or use default
 	port := os.Getenv("PORT")

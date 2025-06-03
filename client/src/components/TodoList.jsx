@@ -34,6 +34,20 @@ const todoApi = {
     return response.data.tasks;
   },
 
+  getTaskCounts: async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/amount`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Get task counts error:', error.response?.data || error.message);
+      throw error;
+    }
+  },
+
   createTask: async (taskData) => {
     try {
       const response = await axios.post(`${API_BASE_URL}`, {
@@ -120,6 +134,7 @@ const todoApi = {
 
 const TodoList = () => {
   const [tasks, setTasks] = useState([]);
+  const [taskCounts, setTaskCounts] = useState({ pending: "0", late: "0", complete: "0" });
   const [currentCategory, setCurrentCategory] = useState('all');
   const [currentSort, setCurrentSort] = useState('date');
   const [currentTask, setCurrentTask] = useState(null);
@@ -147,8 +162,13 @@ const TodoList = () => {
         status: selectedStatus || undefined
       };
       
-      const fetchedTasks = await todoApi.getAllTasks(filters);
+      const [fetchedTasks, counts] = await Promise.all([
+        todoApi.getAllTasks(filters),
+        todoApi.getTaskCounts()
+      ]);
+      
       setTasks(fetchedTasks || []);
+      setTaskCounts(counts);
     } catch (err) {
       setError('Failed to load tasks');
       console.error('Error loading tasks:', err);
@@ -410,7 +430,7 @@ const TodoList = () => {
                 onClick={() => handleStatusClick('pending')}
               >
                 <span className="todo-pending-count">
-                  {tasks.filter(task => task.status === 'pending').length}
+                  {taskCounts.pending}
                 </span>
                 <span className="todo-pending-label">Pending Tasks</span>
               </button>
@@ -419,7 +439,7 @@ const TodoList = () => {
                 onClick={() => handleStatusClick('late')}
               >
                 <span className="todo-late-count">
-                  {tasks.filter(task => task.status === 'late').length}
+                  {taskCounts.late}
                 </span>
                 <span className="todo-late-label">Late Tasks</span>
               </button>
@@ -428,7 +448,7 @@ const TodoList = () => {
                 onClick={() => handleStatusClick('complete')}
               >
                 <span className="todo-complete-count">
-                  {tasks.filter(task => task.status === 'complete').length}
+                  {taskCounts.complete}
                 </span>
                 <span className="todo-complete-label">Completed Tasks</span>
               </button>

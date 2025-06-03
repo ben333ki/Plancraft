@@ -359,3 +359,63 @@ func GetLateTasks(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{"tasks": tasks})
 }
+
+// GetAllTasksAmount returns the count of tasks by status for the user
+func GetAllTasksAmount(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Get user ID from JWT token
+	userIDStr := c.Locals("user_id").(string)
+	userID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid user ID"})
+	}
+
+	// Create pipeline for aggregation
+	pipeline := []bson.M{
+		{
+			"$match": bson.M{
+				"userID": userID,
+			},
+		},
+		{
+			"$group": bson.M{
+				"_id": "$status",
+				"count": bson.M{
+					"$sum": 1,
+				},
+			},
+		},
+	}
+
+	cursor, err := config.ToDoListCollection.Aggregate(ctx, pipeline)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch task counts"})
+	}
+	defer cursor.Close(ctx)
+
+	// Process results
+	var results []bson.M
+	if err := cursor.All(ctx, &results); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to decode task counts"})
+	}
+
+	// Convert results to map
+	taskCounts := make(map[string]string)
+	for _, result := range results {
+		status := result["_id"].(string)
+		count := result["count"].(int32)
+		taskCounts[status] = fmt.Sprintf("%d", count)
+	}
+
+	// Ensure all statuses are present in the response
+	statuses := []string{"pending", "late", "complete"}
+	for _, status := range statuses {
+		if _, exists := taskCounts[status]; !exists {
+			taskCounts[status] = "0"
+		}
+	}
+
+	return c.JSON(taskCounts)
+}
