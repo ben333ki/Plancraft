@@ -432,25 +432,6 @@
     color: #532911;
 }
 
-/* Animation */
-@keyframes farm-card-pop-in {
-    0% {
-        opacity: 0;
-        transform: scale(0.8) translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-.farm-grid > :nth-child(1) { animation-delay: 0.1s; }
-.farm-grid > :nth-child(2) { animation-delay: 0.2s; }
-.farm-grid > :nth-child(3) { animation-delay: 0.3s; }
-.farm-grid > :nth-child(4) { animation-delay: 0.4s; }
-.farm-grid > :nth-child(5) { animation-delay: 0.5s; }
-.farm-grid > :nth-child(6) { animation-delay: 0.6s; }
-
 /* No Results */
 .farm-no-results {
     grid-column: 1 / -1;
