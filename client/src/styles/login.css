@@ -2,7 +2,7 @@
     min-height: 100vh;
     position: relative;
     overflow: hidden;
-    background: url('Image/BG-login.png') no-repeat center center fixed;
+    background: url('/Image/BG-login.png') no-repeat center center fixed;
     background-size: cover;
 }
 
