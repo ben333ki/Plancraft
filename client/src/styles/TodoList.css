@@ -339,13 +339,27 @@
     width: 8px;
     height: 100%;
     cursor: ew-resize;
-    background: transparent;
-    transition: background-color 0.2s ease;
+    background: rgba(96, 63, 16, 0.1);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.todo-resize-handle:hover,
-.todo-resize-handle:active {
+.todo-resize-handle::before {
+    content: "⋮";
+    color: #603F10;
+    font-size: 20px;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.todo-resize-handle:hover {
     background: rgba(96, 63, 16, 0.2);
+}
+
+.todo-resize-handle:hover::before {
+    opacity: 1;
 }
 
 .todo-main-area.show-details .todo-details {
