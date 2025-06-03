@@ -68,6 +68,18 @@ const FarmDetail = () => {
     }
   }, [farmId]);
 
+  // Helper function to calculate stacks
+  const calculateStacks = (amount) => {
+    const fullStacks = Math.floor(amount / 64);
+    const remainder = amount % 64;
+    const totalStacks = fullStacks + (remainder > 0 ? 1 : 0);
+    return {
+      fullStacks,
+      remainder,
+      totalStacks
+    };
+  };
+
   if (isLoading) {
     return (
       <>
@@ -177,29 +189,50 @@ const FarmDetail = () => {
                 <div className="farm-info-section">
                   <h3><i className="fas fa-tools"></i> Items Required</h3>
                   <ul className="farm-resource-list">
-                    {items.required.map((item, index) => (
-                      <li key={index} className="farm-resource-item">
-                        <div className="farm-resource-info">
-                          <img src={item.ItemImage} alt={item.ItemName} className="farm-resource-image" />
-                          <span className="farm-resource-name">{item.ItemName}</span>
-                        </div>
-                        <span className="farm-resource-quantity">x{item.amount}</span>
-                      </li>
-                    ))}
+                    {items.required.map((item, index) => {
+                      const stacks = calculateStacks(item.amount);
+                      return (
+                        <li key={index} className="farm-resource-item">
+                          <div className="farm-resource-info">
+                            <img src={item.ItemImage} alt={item.ItemName} className="farm-resource-image" />
+                            <span className="farm-resource-name">{item.ItemName}</span>
+                          </div>
+                          <div className="farm-resource-quantity">
+                            {stacks.fullStacks > 0 && <span>{stacks.fullStacks} Stack</span>}
+                            {stacks.remainder > 0 && (
+                              <span className="farm-remainder">
+                                {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
                 
                 <div className="farm-info-section">
                   <h3><i className="fas fa-gem"></i> Items Produced</h3>
                   <ul className="farm-resource-list">
-                    {items.produced.map((item, index) => (
-                      <li key={index} className="farm-resource-item">
-                        <div className="farm-resource-info">
-                          <img src={item.ItemImage} alt={item.ItemName} className="farm-resource-image" />
-                          <span className="farm-resource-name">{item.ItemName}</span>
-                        </div>
-                      </li>
-                    ))}
+                    {items.produced.map((item, index) => {
+                      const stacks = calculateStacks(item.amount);
+                      return (
+                        <li key={index} className="farm-resource-item">
+                          <div className="farm-resource-info">
+                            <img src={item.ItemImage} alt={item.ItemName} className="farm-resource-image" />
+                            <span className="farm-resource-name">{item.ItemName}</span>
+                          </div>
+                          <div className="farm-resource-quantity">
+                            {stacks.fullStacks > 0 && <span>{stacks.fullStacks} Stack</span>}
+                            {stacks.remainder > 0 && (
+                              <span className="farm-remainder">
+                                {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               </div>

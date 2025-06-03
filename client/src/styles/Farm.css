@@ -428,8 +428,16 @@
 }
 
 .farm-resource-quantity {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-weight: bold;
-    color: #532911;
+    color: #2196F3;
+}
+
+.farm-remainder {
+    color: #2196F3;
+    font-size: 0.9em;
 }
 
 /* No Results */
