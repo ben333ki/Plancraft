@@ -262,11 +262,9 @@ function Calculator() {
     return (
       <>
         <Navbar />
-        <div className="calculator-page">
-          <div className="calculator-container">
-            <div className="calculator-box">
-              <div className="calculator-loading">Loading...</div>
-            </div>
+        <div className="calc-page">
+          <div className="calc-container">
+            <div className="calc-loading">Loading...</div>
           </div>
         </div>
       </>
@@ -276,34 +274,37 @@ function Calculator() {
   return (
     <>
       <Navbar />
-      <div className="calculator-page">
-        <div className="calculator-container">
-          <div className="calculator-form-toggle">
-            <button 
-              className={`toggle-btn ${activeForm === 'item' ? 'active' : ''}`}
-              onClick={() => setActiveForm('item')}
-            >
-              Item Calculator
-            </button>
-            <button 
-              className={`toggle-btn ${activeForm === 'farm' ? 'active' : ''}`}
-              onClick={() => setActiveForm('farm')}
-            >
-              Farm Calculator
-            </button>
+      <div className="calc-page">
+        <div className="calc-container">
+          <div className="calc-header">
+            <h1>Material Calculator</h1>
+            <div className="calc-type-toggle">
+              <button 
+                className={`calc-type-btn ${activeForm === 'item' ? 'active' : ''}`}
+                onClick={() => setActiveForm('item')}
+              >
+                Item Calculator
+              </button>
+              <button 
+                className={`calc-type-btn ${activeForm === 'farm' ? 'active' : ''}`}
+                onClick={() => setActiveForm('farm')}
+              >
+                Farm Calculator
+              </button>
+            </div>
           </div>
 
           {activeForm === 'farm' && (
-            <div className="calculator-box farm-calculator">
-              <h1>Farm Material Calculator</h1>
+            <div className="calc-box">
+              <h2>Farm Material Calculator</h2>
               
-              {error && <div className="calculator-error">{error}</div>}
+              {error && <div className="calc-error">{error}</div>}
 
-              <div className="calculator-form">
+              <div className="calc-form">
                 {farmRequests.map((request, index) => (
-                  <div key={index} className="calculator-item-row">
+                  <div key={index} className="calc-input-row">
                     <Select
-                      className="calculator-item-select"
+                      className="calc-select"
                       value={farmOptions.find(opt => opt.value === request.farmId) || null}
                       onChange={(selectedOption) => handleFarmChange(index, selectedOption)}
                       options={farmOptions}
@@ -321,14 +322,14 @@ function Calculator() {
                       min="1"
                       value={request.amount}
                       onChange={(e) => handleFarmAmountChange(index, e.target.value)}
-                      className="calculator-amount-input"
+                      className="calc-amount-input"
                       placeholder="Number of farms"
                     />
                     {farmRequests.length > 1 && (
                       <button
                         type="button"
                         onClick={() => handleRemoveFarm(index)}
-                        className="calculator-remove-btn"
+                        className="calc-remove-btn"
                       >
                         Remove
                       </button>
@@ -336,18 +337,18 @@ function Calculator() {
                   </div>
                 ))}
 
-                <div className="calculator-actions">
+                <div className="calc-actions">
                   <button
                     type="button"
                     onClick={handleAddFarm}
-                    className="calculator-add-btn"
+                    className="calc-add-btn"
                   >
                     + Add Farm
                   </button>
                   <button
                     type="button"
                     onClick={calculateFarmMaterials}
-                    className="calculator-calculate-btn"
+                    className="calc-calculate-btn"
                     disabled={isCalculating}
                   >
                     {isCalculating ? 'Calculating...' : 'Calculate Materials'}
@@ -355,22 +356,22 @@ function Calculator() {
                 </div>
 
                 {farmMaterials.length > 0 && (
-                  <div className="calculator-results">
-                    <div className="calculator-results-header">
+                  <div className="calc-results">
+                    <div className="calc-results-header">
                       <h2>Required Materials:</h2>
-                      <span className="stack-note">1 Stack = x64</span>
+                      <span className="calc-stack-note">1 Stack = x64</span>
                     </div>
-                    <div className="calculator-materials-list">
+                    <div className="calc-materials-grid">
                       {farmMaterials.map((material) => {
                         const stacks = calculateStacks(material.amount);
                         return (
-                          <div key={material.item_id} className="calculator-material-item">
+                          <div key={material.item_id} className="calc-material-item">
                             <img src={material.item_image} alt={material.item_name} />
                             <span>{material.item_name}</span>
-                            <div className="calculator-material-amount">
+                            <div className="calc-material-amount">
                               {stacks.fullStacks > 0 && <span>{stacks.fullStacks} Stack</span>}
                               {stacks.remainder > 0 && (
-                                <span className="remainder-stack">
+                                <span className="calc-remainder">
                                   {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
                                 </span>
                               )}
@@ -379,13 +380,13 @@ function Calculator() {
                         );
                       })}
                     </div>
-                    <div className="calculator-todo-button">
+                    <div className="calc-todo-btn">
                       <button
                         type="button"
                         onClick={() => createTodoFromMaterials(farmMaterials)}
-                        className="todo-create-btn"
+                        className="calc-todo-create-btn"
                       >
-                        <span>📝</span> Create Todo List
+                        Create Todo List
                       </button>
                     </div>
                   </div>
@@ -395,16 +396,16 @@ function Calculator() {
           )}
 
           {activeForm === 'item' && (
-            <div className="calculator-box item-calculator">
-              <h1>Item Material Calculator</h1>
+            <div className="calc-box">
+              <h2>Item Material Calculator</h2>
               
-              {error && <div className="calculator-error">{error}</div>}
+              {error && <div className="calc-error">{error}</div>}
 
-              <div className="calculator-form">
+              <div className="calc-form">
                 {craftRequests.map((request, index) => (
-                  <div key={index} className="calculator-item-row">
+                  <div key={index} className="calc-input-row">
                     <Select
-                      className="calculator-item-select"
+                      className="calc-select"
                       value={getSelectedOption(request.itemId)}
                       onChange={(selectedOption) => handleItemChange(index, selectedOption)}
                       options={itemOptions}
@@ -422,13 +423,13 @@ function Calculator() {
                       min="1"
                       value={request.amount}
                       onChange={(e) => handleAmountChange(index, e.target.value)}
-                      className="calculator-amount-input"
+                      className="calc-amount-input"
                     />
                     {craftRequests.length > 1 && (
                       <button
                         type="button"
                         onClick={() => handleRemoveItem(index)}
-                        className="calculator-remove-btn"
+                        className="calc-remove-btn"
                       >
                         Remove
                       </button>
@@ -436,18 +437,18 @@ function Calculator() {
                   </div>
                 ))}
 
-                <div className="calculator-actions">
+                <div className="calc-actions">
                   <button
                     type="button"
                     onClick={handleAddItem}
-                    className="calculator-add-btn"
+                    className="calc-add-btn"
                   >
                     + Add Item
                   </button>
                   <button
                     type="button"
                     onClick={calculateMaterials}
-                    className="calculator-calculate-btn"
+                    className="calc-calculate-btn"
                     disabled={isCalculating}
                   >
                     {isCalculating ? 'Calculating...' : 'Calculate Materials'}
@@ -455,22 +456,22 @@ function Calculator() {
                 </div>
 
                 {itemMaterials.length > 0 && (
-                  <div className="calculator-results">
-                    <div className="calculator-results-header">
+                  <div className="calc-results">
+                    <div className="calc-results-header">
                       <h2>Required Materials:</h2>
-                      <span className="stack-note">1 Stack = x64</span>
+                      <span className="calc-stack-note">1 Stack = x64</span>
                     </div>
-                    <div className="calculator-materials-list">
+                    <div className="calc-materials-grid">
                       {itemMaterials.map((material) => {
                         const stacks = calculateStacks(material.amount);
                         return (
-                          <div key={material.item_id} className="calculator-material-item">
+                          <div key={material.item_id} className="calc-material-item">
                             <img src={material.item_image} alt={material.item_name} />
                             <span>{material.item_name}</span>
-                            <div className="calculator-material-amount">
+                            <div className="calc-material-amount">
                               {stacks.fullStacks > 0 && <span>{stacks.fullStacks} Stack</span>}
                               {stacks.remainder > 0 && (
-                                <span className="remainder-stack">
+                                <span className="calc-remainder">
                                   {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
                                 </span>
                               )}
@@ -479,13 +480,13 @@ function Calculator() {
                         );
                       })}
                     </div>
-                    <div className="calculator-todo-button">
+                    <div className="calc-todo-btn">
                       <button
                         type="button"
                         onClick={() => createTodoFromMaterials(itemMaterials)}
-                        className="todo-create-btn"
+                        className="calc-todo-create-btn"
                       >
-                        <span>📝</span> Create Todo List
+                        Create Todo List
                       </button>
                     </div>
                   </div>
@@ -730,36 +731,5 @@ const CATEGORIES = [
 ];
 
 const PRIORITIES = ['low', 'medium', 'high'];
-
-// Add these styles to your CSS
-const styles = `
-.calculator-form-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.toggle-btn {
-  padding: 0.75rem 1.5rem;
-  border: 2px solid #4a5568;
-  border-radius: 0.5rem;
-  background: transparent;
-  color: #4a5568;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.toggle-btn:hover {
-  background: #4a5568;
-  color: white;
-}
-
-.toggle-btn.active {
-  background: #4a5568;
-  color: white;
-}
-`;
 
 export default Calculator;
