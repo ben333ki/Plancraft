@@ -198,7 +198,6 @@ const FarmDetail = () => {
                           <img src={item.ItemImage} alt={item.ItemName} className="farm-resource-image" />
                           <span className="farm-resource-name">{item.ItemName}</span>
                         </div>
-                        <span className="farm-resource-quantity">x{item.amount}</span>
                       </li>
                     ))}
                   </ul>

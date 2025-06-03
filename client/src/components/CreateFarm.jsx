@@ -320,13 +320,6 @@ function CreateFarm() {
                       placeholder="Select an item..."
                       isSearchable
                     />
-                    <input
-                      type="number"
-                      min="1"
-                      value={item.amount}
-                      onChange={(e) => handleAmountChange('items_produced', index, e.target.value)}
-                      className="calculator-amount-input"
-                    />
                     <button
                       type="button"
                       onClick={() => handleRemoveItem('items_produced', index)}
