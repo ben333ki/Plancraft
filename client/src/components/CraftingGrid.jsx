@@ -1,8 +1,13 @@
 import React from 'react';
 
-const CraftingGrid = ({ title, gridSlots, resultSlot }) => {
+const CraftingGrid = ({ title, gridSlots, resultSlot, onClick, isFocused, onClose }) => {
   return (
-    <div className="craft-crafting-grid">
+    <div className={`craft-crafting-grid ${isFocused ? 'focused' : ''}`} onClick={onClick}>
+      {isFocused && (
+        <button className="craft-close-btn" onClick={onClose}>
+          &times;
+        </button>
+      )}
       <div className="craft-grid-container">
         {gridSlots.map((slot, index) => (
           <div key={index} className="craft-grid-slot">

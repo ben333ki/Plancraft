@@ -622,3 +622,60 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #654321;
 }
+
+/* Focused grid view */
+.craft-focused-grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.craft-focused-grid-wrapper {
+    position: relative;
+}
+
+
+.craft-focused-grid-wrapper .craft-crafting-grid {
+    flex: none;
+    width: auto;
+    max-width: 100%;
+    transform: none;
+    border-radius: 18px;
+    padding: 30px;
+}
+
+.craft-close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(244, 67, 54, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
+    z-index: 1002;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    padding: 0;
+}
+
+.craft-close-btn:hover {
+    background: rgba(211, 47, 47, 0.9);
+    transform: scale(1.1);
+}
+
+.craft-close-btn:active {
+    background: rgba(198, 40, 40, 0.9);
+    transform: scale(0.95);
+}
