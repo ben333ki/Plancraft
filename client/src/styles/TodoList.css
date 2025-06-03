@@ -529,7 +529,7 @@
 .todo-details .todo-uncomplete-btn {
     background: rgba(76, 175, 80, 0.8);
     color: white;
-    padding: 8px 15px;
+    padding: 8px 0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
