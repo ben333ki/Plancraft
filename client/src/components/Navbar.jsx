@@ -121,23 +121,23 @@ const Navbar = () => {
                             
                             <div className="admin-dropdown-content">
                                 <Link to="/createitem" className="admin-dropdown-item">
-                                    <img src="/image/Iron_Pickaxe.webp" alt="Add Item" />
+                                    <img src="/Image/Iron_Pickaxe.webp" alt="Add Item" />
                                     <span>Add Item</span>
                                 </Link>
                                 <Link to="/createrecipe" className="admin-dropdown-item">
-                                    <img src="/image/icon-craft.png" alt="Add Recipe" />
+                                    <img src="/Image/icon-craft.png" alt="Add Recipe" />
                                     <span>Add Recipe</span>
                                 </Link>
                                 <Link to="/createfarm" className="admin-dropdown-item">
-                                    <img src="/image/Wheat.webp" alt="Add Farm" />
+                                    <img src="/Image/Wheat.webp" alt="Add Farm" />
                                     <span>Add Farm</span>
                                 </Link>
                                 <Link to="/deleterecipe" className="admin-dropdown-item">
-                                    <img src="/image/Barrier.webp" alt="Delete Recipe" />
+                                    <img src="/Image/Barrier.webp" alt="Delete Recipe" />
                                     <span>Delete Recipe</span>
                                 </Link>
                                 <Link to="/deletefarm" className="admin-dropdown-item">
-                                    <img src="/image/Barrier.webp" alt="Delete Farm" />
+                                    <img src="/Image/Barrier.webp" alt="Delete Farm" />
                                     <span>Delete Farm</span>
                                 </Link>
                             </div>
