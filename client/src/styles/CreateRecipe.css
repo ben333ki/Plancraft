@@ -133,3 +133,64 @@
   color: #6b7280;
   padding: 2rem;
 }
+
+.delete-recipe-delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calculator-add-btn,
+.calculator-remove-btn,
+.calculator-calculate-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calculator-add-btn {
+  background-color: #28a745;
+}
+
+.calculator-calculate-btn {
+  background-color: #007bff;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.calculator-add-btn:hover,
+.calculator-remove-btn:hover,
+.calculator-calculate-btn:hover {
+  opacity: 0.9;
+}
+
+.calculator-item-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.calculator-item-select {
+  flex: 1;
+}
+
+.calculator-amount-input {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  margin: 0 8px;
+}
+
+.calculator-remove-btn {
+  flex-shrink: 0;
+}

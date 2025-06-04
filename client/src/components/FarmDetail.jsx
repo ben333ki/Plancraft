@@ -222,14 +222,6 @@ const FarmDetail = () => {
                             <img src={item.ItemImage} alt={item.ItemName} className="farm-resource-image" />
                             <span className="farm-resource-name">{item.ItemName}</span>
                           </div>
-                          <div className="farm-resource-quantity">
-                            {stacks.fullStacks > 0 && <span>{stacks.fullStacks} Stack</span>}
-                            {stacks.remainder > 0 && (
-                              <span className="farm-remainder">
-                                {stacks.fullStacks > 0 ? ' + ' : ''}x{stacks.remainder}
-                              </span>
-                            )}
-                          </div>
                         </li>
                       );
                     })}

@@ -134,6 +134,7 @@ const todoApi = {
 
 const TodoList = () => {
   const [tasks, setTasks] = useState([]);
+  const [calendarTasks, setCalendarTasks] = useState([]);
   const [taskCounts, setTaskCounts] = useState({ pending: "0", late: "0", complete: "0" });
   const [currentCategory, setCurrentCategory] = useState('all');
   const [currentSort, setCurrentSort] = useState('date');
@@ -149,6 +150,8 @@ const TodoList = () => {
   const [error, setError] = useState(null);
   const [isResizing, setIsResizing] = useState(false);
   const [detailsWidth, setDetailsWidth] = useState(400);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   // Load tasks from API
   const loadTasks = async () => {
@@ -178,9 +181,21 @@ const TodoList = () => {
     }
   };
 
+  // Load calendar tasks
+  const loadCalendarTasks = async () => {
+    try {
+      const calendarTasks = await todoApi.getAllTasks({ status: 'pending' });
+      setCalendarTasks(calendarTasks || []);
+    } catch (err) {
+      console.error('Error loading calendar tasks:', err);
+      setCalendarTasks([]);
+    }
+  };
+
   // Initial load
   useEffect(() => {
     loadTasks();
+    loadCalendarTasks();
   }, []);
 
   // Reload when filters change
@@ -370,6 +385,77 @@ const TodoList = () => {
     };
   }, [isResizing]);
 
+  const getDaysInMonth = (year, month) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (year, month) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const isToday = (date) => {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
+  };
+
+  const getTasksForDate = (date) => {
+    return calendarTasks.filter(task => {
+      const taskDate = new Date(task.startDate);
+      return taskDate.getDate() === date.getDate() &&
+             taskDate.getMonth() === date.getMonth() &&
+             taskDate.getFullYear() === date.getFullYear();
+    });
+  };
+
+  const renderCalendar = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const daysInMonth = getDaysInMonth(year, month);
+    const firstDay = getFirstDayOfMonth(year, month);
+    const days = [];
+
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
+    }
+
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const tasksForDate = getTasksForDate(date);
+      const hasTasks = tasksForDate.length > 0;
+      
+      // Format task titles with numbers if there are multiple tasks
+      const taskTitles = hasTasks 
+        ? tasksForDate.map((task, index) => 
+            tasksForDate.length > 1 
+              ? `${index + 1}. ${task.title}`
+              : task.title
+          ).join('\n')
+        : '';
+      
+      days.push(
+        <div
+          key={day}
+          className={`calendar-day ${isToday(date) ? 'today' : ''} ${hasTasks ? 'has-tasks' : ''}`}
+          onClick={() => {
+            if (hasTasks) {
+              setCurrentTask(tasksForDate[0]);
+            }
+          }}
+          title={taskTitles}
+        >
+          {day}
+          {hasTasks && <span className="task-dot"></span>}
+        </div>
+      );
+    }
+
+    return days;
+  };
+
   const renderTaskItem = (task) => (
     <div
       key={task.id}
@@ -436,7 +522,7 @@ const TodoList = () => {
                 <span className="todo-pending-count">
                   {taskCounts.pending}
                 </span>
-                <span className="todo-pending-label">Pending Tasks</span>
+                <span className="todo-pending-label">In progress tasks</span>
               </button>
               <button
                 className={`todo-late-btn ${selectedStatus === 'late' ? 'active' : ''}`}
@@ -445,7 +531,7 @@ const TodoList = () => {
                 <span className="todo-late-count">
                   {taskCounts.late}
                 </span>
-                <span className="todo-late-label">Late Tasks</span>
+                <span className="todo-late-label">Late tasks</span>
               </button>
               <button
                 className={`todo-complete-btn ${selectedStatus === 'complete' ? 'active' : ''}`}
@@ -454,9 +540,20 @@ const TodoList = () => {
                 <span className="todo-complete-count">
                   {taskCounts.complete}
                 </span>
-                <span className="todo-complete-label">Completed Tasks</span>
+                <span className="todo-complete-label">Completed tasks</span>
               </button>
             </div>
+          </div>
+
+          {/* Calendar Button */}
+          <div className="todo-sidebar-section">
+            <button 
+              className="todo-calendar-btn"
+              onClick={() => setShowCalendar(true)}
+            >
+              <span className="calendar-icon">📅</span>
+              <span>View Calendar</span>
+            </button>
           </div>
         </aside>
 
@@ -601,6 +698,35 @@ const TodoList = () => {
             <div className="todo-confirmation-buttons">
               <button className="todo-confirm-delete" onClick={() => deleteTask(taskToDelete.id)}>Delete</button>
               <button className="todo-cancel-delete" onClick={() => setShowDeleteConfirmation(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Calendar Modal */}
+      {showCalendar && (
+        <div className="calendar-modal-overlay" onClick={() => setShowCalendar(false)}>
+          <div className="calendar-modal" onClick={e => e.stopPropagation()}>
+            <div className="calendar-modal-header">
+              <h2>Calendar</h2>
+              <button className="calendar-close-btn" onClick={() => setShowCalendar(false)}>×</button>
+            </div>
+            <div className="calendar-modal-content">
+              <div className="calendar-controls">
+                <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}>
+                  ←
+                </button>
+                <span>{currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
+                <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))}>
+                  →
+                </button>
+              </div>
+              <div className="calendar-grid">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} className="calendar-day-header">{day}</div>
+                ))}
+                {renderCalendar()}
+              </div>
             </div>
           </div>
         </div>

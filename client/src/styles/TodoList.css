@@ -437,6 +437,7 @@
     display: flex;
     gap: 10px;
     margin-top: 15px;
+    margin-bottom: 50px;
 }
 
 .todo-task-actions button {
@@ -794,4 +795,207 @@
     border: 1px solid #ffcdd2;
     font-size: 14px;
     text-align: center;
+}
+
+/* Calendar Button Styles */
+.todo-calendar-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #B27926;
+  border: 1px solid #603F10;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+  color: #ffffff;
+}
+
+.todo-calendar-btn:hover {
+  background-color: #996518;
+}
+
+.calendar-icon {
+  font-size: 1.2em;
+}
+
+/* Calendar Modal Styles */
+.calendar-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.calendar-modal {
+  background-color: #603F10;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 2px solid #B27926;
+}
+
+.calendar-modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #B27926;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calendar-modal-header h2 {
+  margin: 0;
+  font-size: 1.5em;
+  color: #ffd000;
+}
+
+.calendar-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #ffd000;
+  padding: 0;
+  line-height: 1;
+}
+
+.calendar-modal-content {
+  padding: 20px;
+}
+
+.calendar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-controls button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px 10px;
+  color: #ffd000;
+}
+
+.calendar-controls button:hover {
+  color: #ffffff;
+}
+
+.calendar-controls span {
+  font-size: 1.2em;
+  font-weight: 500;
+  color: #ffd000;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 500;
+  color: #ffd000;
+  padding: 8px;
+  font-size: 0.9em;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: default;
+  transition: all 0.2s ease;
+  color: #ffffff;
+  background-color: rgba(178, 121, 38, 0.5);
+  position: relative;
+}
+
+.calendar-day.has-tasks {
+  background-color: rgba(178, 121, 38, 0.8);
+  border: 1px solid #ffd000;
+  cursor: pointer;
+}
+
+.calendar-day.has-tasks:hover {
+  background-color: #B27926;
+  transform: scale(1.05);
+  z-index: 1;
+  box-shadow: 0 0 10px rgba(255, 208, 0, 0.5);
+}
+
+.calendar-day.today {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.calendar-day.today.has-tasks {
+  background-color: #45a049;
+  border: 1px solid #ffd000;
+}
+
+.calendar-day.empty {
+  background: none;
+  cursor: default;
+}
+
+.task-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  background-color: #ffd000;
+  border-radius: 50%;
+}
+
+/* Calendar tooltip styles */
+.calendar-day.has-tasks[title] {
+  position: relative;
+}
+
+.calendar-day.has-tasks[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  white-space: pre-line;
+  z-index: 2;
+  min-width: 150px;
+  text-align: center;
+  margin-bottom: 5px;
+  border: 1px solid #ffd000;
+}
+
+/* Responsive Calendar */
+@media (max-width: 768px) {
+  .calendar-modal {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .calendar-day {
+    font-size: 0.9em;
+  }
 }
