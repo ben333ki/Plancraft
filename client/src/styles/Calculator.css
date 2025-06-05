@@ -234,7 +234,9 @@
 
 .calc-todo-create-btn {
   padding: 0.75rem 2rem;
-  background-color: #9c27b0;
+  background-color: #B27926;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
   color: white;
   border: none;
   border-radius: 8px;
@@ -246,7 +248,9 @@
 }
 
 .calc-todo-create-btn:hover {
-  background-color: #7b1fa2;
+  background-color: #966721;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2),
+                inset 0 0 20px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
